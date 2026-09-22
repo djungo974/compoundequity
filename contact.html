@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Contact — Compound Equity</title>
-<meta name="description" content="Leave us your details, a member of the Compound Equity team will get back to you within 24–48h.">
+<meta name="description" content="Leave us your details, a member of the Compound Equity team will get back to you.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='19' fill='%23C1622D'/%3E%3Cpath d='M11 25V27M17 21V27M23 16V27' stroke='%23FBF5EC' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="css/style.css">
 </head>
-<body data-title-key="meta.title.contact">
+<body>
 
 <header class="nav">
   <div class="container">
@@ -22,19 +22,13 @@
       <span class="brand-name">Compound <b>Equity</b></span>
     </a>
     <ul class="nav-links">
-      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
-      <li><a href="consulting.html" data-i18n="nav.consulting">Consulting</a></li>
-      <li><a href="about.html" data-i18n="nav.about">Philosophy</a></li>
-      <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="consulting.html">Consulting</a></li>
+      <li><a href="about.html">Philosophy</a></li>
+      <li><a href="contact.html">Contact</a></li>
     </ul>
     <div class="nav-right">
-      <div class="lang-switch">
-        <button data-lang="fr">FR</button>
-        <button data-lang="en">EN</button>
-        <button data-lang="es">ES</button>
-        <button data-lang="de">DE</button>
-      </div>
-      <a href="contact.html" class="btn btn-primary btn-sm" data-magnetic data-i18n="nav.cta">Book a call</a>
+      <a href="contact.html" class="btn btn-primary btn-sm" data-magnetic>Book a call</a>
       <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -42,24 +36,20 @@
 
 <div class="mobile-nav">
   <button class="mobile-close" aria-label="Close">✕</button>
-  <a href="index.html" data-i18n="nav.home">Home</a>
-  <a href="consulting.html" data-i18n="nav.consulting">Consulting</a>
-  <a href="about.html" data-i18n="nav.about">Philosophy</a>
-  <a href="contact.html" data-i18n="nav.contact">Contact</a>
-  <div class="lang-switch">
-    <button data-lang="fr">FR</button><button data-lang="en">EN</button><button data-lang="es">ES</button>
-        <button data-lang="de">DE</button>
-  </div>
-  <a href="contact.html" class="btn btn-primary btn-block" data-i18n="nav.cta">Book a call</a>
+  <a href="index.html">Home</a>
+  <a href="consulting.html">Consulting</a>
+  <a href="about.html">Philosophy</a>
+  <a href="contact.html">Contact</a>
+  <a href="contact.html" class="btn btn-primary btn-block">Book a call</a>
 </div>
 
 <main>
   <section class="page-hero section-cream">
     <div class="page-hero-glow"></div>
     <div class="container">
-      <div class="eyebrow" data-reveal data-i18n="contact.hero.eyebrow">Contact</div>
-      <h1 data-reveal data-reveal-delay="1" data-i18n="contact.hero.h1">Let's talk about your investment strategy.</h1>
-      <p data-reveal data-reveal-delay="2" data-i18n="contact.hero.p">Leave us your details.</p>
+      <div class="eyebrow" data-reveal>Contact</div>
+      <h1 data-reveal data-reveal-delay="1">Let's talk about your investment strategy.</h1>
+      <p data-reveal data-reveal-delay="2">Leave us your details.</p>
     </div>
   </section>
 
@@ -69,77 +59,77 @@
         <form id="contactForm" novalidate>
           <div class="field-row">
             <div class="field">
-              <label for="firstname" data-i18n="contact.form.firstname">First name</label>
+              <label for="firstname">First name</label>
               <input type="text" id="firstname" name="firstname" required>
             </div>
             <div class="field">
-              <label for="lastname" data-i18n="contact.form.lastname">Last name</label>
+              <label for="lastname">Last name</label>
               <input type="text" id="lastname" name="lastname" required>
             </div>
           </div>
           <div class="field-row">
             <div class="field">
-              <label for="email" data-i18n="contact.form.email">Email</label>
+              <label for="email">Email</label>
               <input type="email" id="email" name="email" required>
             </div>
             <div class="field">
-              <label for="phone" data-i18n="contact.form.phone">Phone (optional)</label>
+              <label for="phone">Phone (optional)</label>
               <input type="tel" id="phone" name="phone">
             </div>
           </div>
           <div class="field">
-            <label for="capital" data-i18n="contact.form.capital">Capital you're considering</label>
+            <label for="capital">Capital you're considering</label>
             <select id="capital" name="capital">
-              <option data-i18n="contact.form.capital.o0">Select…</option>
-              <option data-i18n="contact.form.capital.o1">Under $10,000</option>
-              <option data-i18n="contact.form.capital.o2">$10,000 – $50,000</option>
-              <option data-i18n="contact.form.capital.o3">$50,000 – $250,000</option>
-              <option data-i18n="contact.form.capital.o4">Over $250,000</option>
+              <option>Select…</option>
+              <option>Under $10,000</option>
+              <option>$10,000 – $50,000</option>
+              <option>$50,000 – $250,000</option>
+              <option>Over $250,000</option>
             </select>
           </div>
           <div class="field">
-            <label for="message" data-i18n="contact.form.message">Your message</label>
-            <textarea id="message" name="message" rows="5" data-i18n-ph="contact.form.message.ph" placeholder="Tell us about your investment goals…"></textarea>
+            <label for="message">Your message</label>
+            <textarea id="message" name="message" rows="5" placeholder="Tell us about your investment goals…"></textarea>
           </div>
-          <button type="submit" class="btn btn-primary btn-block" data-magnetic data-i18n="contact.form.submit">Send my request</button>
+          <button type="submit" class="btn btn-primary btn-block" data-magnetic>Send my request</button>
           <div class="form-success" id="formSuccess">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span data-i18n="contact.form.sent">Thank you! Your request has been received.</span>
+            <span>Thank you! Your request has been received.</span>
           </div>
         </form>
       </div>
 
       <div data-reveal data-reveal-delay="1">
         <div class="contact-info-card">
-          <h3 data-i18n="contact.info.title">Get in touch</h3>
-          <p data-i18n="contact.info.text">Compound Equity LLC operates remotely to support investors around the world.</p>
+          <h3>Get in touch</h3>
+          <p>Compound Equity LLC operates remotely to support investors across the United States.</p>
 
           <div class="contact-row">
             <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div>
             <div>
-              <b data-i18n="contact.info.email.label">Email</b>
+              <b>Email</b>
               <a href="mailto:contact@compoundequity.com">contact@compoundequity.com</a>
             </div>
           </div>
           <div class="contact-row">
             <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 2 .6 3a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c1 .3 2 .5 3 .6a2 2 0 0 1 1.7 2z"/></svg></div>
             <div>
-              <b data-i18n="contact.info.phone.label">Phone</b>
+              <b>Phone</b>
               <span>+1 (302) 555-0148</span>
             </div>
           </div>
           <div class="contact-row">
             <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2" stroke-linecap="round"/></svg></div>
             <div>
-              <b data-i18n="contact.info.hours.label">Availability</b>
-              <span data-i18n="contact.info.hours.value">Mon – Fri, 9am – 6pm (EST)</span>
+              <b>Availability</b>
+              <span>Mon – Fri, 9am – 6pm (EST)</span>
             </div>
           </div>
           <div class="contact-row">
             <div class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s7-6.4 7-12a7 7 0 1 0-14 0c0 5.6 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
             <div>
-              <b data-i18n="contact.info.address.label">Headquarters</b>
-              <span data-i18n="contact.info.address.value">Compound Equity LLC — internationally registered company</span>
+              <b>Headquarters</b>
+              <span>Compound Equity LLC — United States</span>
             </div>
           </div>
         </div>
@@ -161,42 +151,41 @@
           </svg>
           <span class="brand-name">Compound <b>Equity</b></span>
         </a>
-        <p class="footer-desc" data-i18n="footer.desc">Compound Equity guides individual investors with a conviction-led approach.</p>
+        <p class="footer-desc">Compound Equity guides individual investors with a conviction-led approach to diversified global equities.</p>
       </div>
       <div>
-        <h5 data-i18n="footer.nav.title">Navigation</h5>
+        <h5>Navigation</h5>
         <ul>
-          <li><a href="index.html" data-i18n="nav.home">Home</a></li>
-          <li><a href="consulting.html" data-i18n="nav.consulting">Consulting</a></li>
-          <li><a href="about.html" data-i18n="nav.about">Philosophy</a></li>
-          <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="consulting.html">Consulting</a></li>
+          <li><a href="about.html">Philosophy</a></li>
+          <li><a href="contact.html">Contact</a></li>
         </ul>
       </div>
       <div>
-        <h5 data-i18n="footer.legal.title">Legal</h5>
+        <h5>Legal</h5>
         <ul>
-          <li><a href="#" data-i18n="footer.legal.privacy">Privacy Policy</a></li>
-          <li><a href="#" data-i18n="footer.legal.terms">Terms of Use</a></li>
-          <li><a href="#" data-i18n="footer.legal.risk">Risk Disclosure</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Use</a></li>
+          <li><a href="#">Risk Disclosure</a></li>
         </ul>
       </div>
       <div>
-        <h5 data-i18n="footer.contact.title">Contact</h5>
+        <h5>Contact</h5>
         <ul>
           <li><a href="mailto:contact@compoundequity.com">contact@compoundequity.com</a></li>
-          <li><a href="contact.html" data-i18n="nav.cta">Book a call</a></li>
+          <li><a href="contact.html">Book a call</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span data-i18n="footer.rights">© 2026 Compound Equity LLC.</span>
+      <span>© 2026 Compound Equity LLC.</span>
       <span>Compound Equity</span>
     </div>
-    <p class="footer-legal" data-i18n="footer.legaltext">Compound Equity LLC is not a registered investment adviser.</p>
+    <p class="footer-legal">Compound Equity LLC is not a registered investment adviser and does not provide discretionary portfolio management. The content on this site, including exchanges with our conversational assistant, is provided for informational and educational purposes only and does not constitute an offer, solicitation, or regulated personalized investment advice. Investing in equities involves risk, including the potential loss of invested capital. Past performance is not indicative of future results. Compound Equity and its representatives accept no liability for any loss, direct or indirect, resulting from decisions made based on information provided on this site, including over any period of time. We recommend consulting a licensed financial advisor before making any investment decision.</p>
   </div>
 </footer>
 
-<script src="js/i18n.js"></script>
 <script src="js/main.js"></script>
 <script>
   document.getElementById("contactForm").addEventListener("submit", function (e) {

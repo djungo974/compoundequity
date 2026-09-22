@@ -9,36 +9,40 @@
   "use strict";
 
   const QUESTIONS = [
-    { id: "q1", textKey: "chat.q1", options: [
-      { key: "chat.q1.o1", score: 0 },
-      { key: "chat.q1.o2", score: 1 },
-      { key: "chat.q1.o3", score: 2 },
-      { key: "chat.q1.o4", score: 3 },
+    { text: "To start, what's your investment horizon?", options: [
+      { label: "Less than 2 years", score: 0 },
+      { label: "2 to 5 years", score: 1 },
+      { label: "5 to 10 years", score: 2 },
+      { label: "More than 10 years", score: 3 },
     ]},
-    { id: "q2", textKey: "chat.q2", options: [
-      { key: "chat.q2.o1", score: 0 },
-      { key: "chat.q2.o2", score: 2 },
-      { key: "chat.q2.o3", score: 3 },
+    { text: "How would you react to a 20% drop in your portfolio?", options: [
+      { label: "I'd sell to limit losses", score: 0 },
+      { label: "I'd wait it out", score: 2 },
+      { label: "I'd invest more", score: 3 },
     ]},
-    { id: "q3", textKey: "chat.q3", options: [
-      { key: "chat.q3.o1", score: 0 },
-      { key: "chat.q3.o2", score: 1 },
-      { key: "chat.q3.o3", score: 2 },
-      { key: "chat.q3.o4", score: 3 },
+    { text: "How much capital are you considering investing?", options: [
+      { label: "Under $10,000", score: 0 },
+      { label: "$10,000 – $50,000", score: 1 },
+      { label: "$50,000 – $250,000", score: 2 },
+      { label: "Over $250,000", score: 3 },
     ]},
-    { id: "q4", textKey: "chat.q4", options: [
-      { key: "chat.q4.o1", score: 2 },
-      { key: "chat.q4.o2", score: 1 },
-      { key: "chat.q4.o3", score: 2 },
-      { key: "chat.q4.o4", score: 3 },
+    { text: "What's your main goal?", options: [
+      { label: "Grow my capital long-term", score: 2 },
+      { label: "Generate extra income", score: 1 },
+      { label: "Prepare for retirement", score: 2 },
+      { label: "Diversify existing wealth", score: 3 },
     ]},
   ];
+
+  const RESULTS = {
+    foundations: "Your profile matches a cautious, progressive approach. We recommend the <strong>Foundations</strong> plan — ideal for starting with method.",
+    compounding: "Your profile shows a good balance of patience and ambition. We recommend the <strong>Compounding</strong> plan — our most complete day-to-day guidance.",
+    legacy: "Your profile shows a long horizon and high risk tolerance. We recommend the <strong>Legacy</strong> plan — full wealth-advisory support.",
+  };
 
   let step = 0;
   let score = 0;
   let busy = false;
-
-  function lang() { return document.documentElement.getAttribute("lang") || "fr"; }
 
   function els() {
     return {
@@ -86,7 +90,7 @@
     setBusy(true);
     setTimeout(() => {
       typing.remove();
-      addMessage(t(q.textKey, lang()), "msg-bot");
+      addMessage(q.text, "msg-bot");
       setBusy(false);
       renderOptions(q);
     }, 550 + Math.random() * 300);
@@ -99,17 +103,17 @@
       const btn = document.createElement("button");
       btn.className = "chat-opt";
       btn.type = "button";
-      btn.textContent = t(opt.key, lang());
-      btn.addEventListener("click", () => handleAnswer(q, opt, btn.textContent));
+      btn.textContent = opt.label;
+      btn.addEventListener("click", () => handleAnswer(q, opt));
       opts.appendChild(btn);
     });
   }
 
-  function handleAnswer(q, opt, label) {
+  function handleAnswer(q, opt) {
     if (busy) return;
     setBusy(true);
     clearOptions();
-    addMessage(label, "msg-user");
+    addMessage(opt.label, "msg-user");
     score += opt.score;
     step += 1;
     if (step < QUESTIONS.length) {
@@ -129,17 +133,16 @@
     const typing = addTyping();
     setTimeout(() => {
       typing.remove();
-      addMessage(t("chat.analyzing", lang()), "msg-bot");
+      addMessage("Thank you. Cross-referencing your answers with our conviction grid…", "msg-bot");
       const typing2 = addTyping();
       setTimeout(() => {
         typing2.remove();
         const tier = tierFromScore(score);
         const resultHtml =
-          '<div style="font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--orange-deep); font-weight:700; margin-bottom:8px;">' +
-          t("chat.result.title", lang()) + '</div>' +
-          '<div style="font-size:15px; line-height:1.6; color:var(--ink);">' + t("chat.result." + tier, lang()) + '</div>' +
-          '<div style="margin-top:16px;"><a href="#plan-' + tier + '" class="btn btn-primary btn-sm">' + t("chat.result.cta", lang()) + '</a></div>' +
-          '<div style="margin-top:14px; font-size:12px; color:var(--ink-faint); line-height:1.6;">' + t("chat.result.disclaimer", lang()) + '</div>';
+          '<div style="font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--orange-deep); font-weight:700; margin-bottom:8px;">Suggested orientation</div>' +
+          '<div style="font-size:15px; line-height:1.6; color:var(--ink);">' + RESULTS[tier] + '</div>' +
+          '<div style="margin-top:16px;"><a href="#plan-' + tier + '" class="btn btn-primary btn-sm">See the recommended plan</a></div>' +
+          '<div style="margin-top:14px; font-size:12px; color:var(--ink-faint); line-height:1.6;">This orientation is generated automatically from your answers, for informational and educational purposes only. It does not constitute regulated, personalized investment advice.</div>';
         addMessage(resultHtml, "msg-result");
         document.querySelectorAll(".plan").forEach((p) => p.classList.remove("is-recommended"));
         const rec = document.getElementById("plan-" + tier);
@@ -159,7 +162,7 @@
     const typing = addTyping();
     setTimeout(() => {
       typing.remove();
-      addMessage(t("consulting.chat.intro", lang()), "msg-bot");
+      addMessage("Hi, I'm the Compound Equity assistant. I'll ask you a few questions to understand your investor profile — it takes less than two minutes.", "msg-bot");
       setTimeout(() => askQuestion(0), 500);
     }, 500);
   }
@@ -168,8 +171,5 @@
     if (!document.getElementById("chatBody")) return;
     startChat();
     els().restart.addEventListener("click", startChat);
-    document.addEventListener("ce:langchange", () => {
-      if (!busy) startChat();
-    });
   });
 })();
