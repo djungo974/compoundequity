@@ -150,35 +150,20 @@
     );
   }
 
-  /* ---- Hero image carousel ---- */
+  /* ---- Hero image carousel — fully automatic fade, no controls ---- */
   function initCarousel() {
     const root = document.getElementById("heroCarousel");
     if (!root) return;
     const slides = Array.from(root.querySelectorAll(".carousel-slide"));
-    const dots = Array.from(root.querySelectorAll(".carousel-dot"));
-    const prevBtn = root.querySelector(".carousel-prev");
-    const nextBtn = root.querySelector(".carousel-next");
     let index = 0;
-    let timer = null;
-    const AUTO_MS = 5000;
+    const AUTO_MS = 7000;
 
-    function show(i) {
-      index = (i + slides.length) % slides.length;
+    function next() {
+      index = (index + 1) % slides.length;
       slides.forEach((s, n) => s.classList.toggle("is-active", n === index));
-      dots.forEach((d, n) => d.classList.toggle("is-active", n === index));
     }
-    function next() { show(index + 1); }
-    function prev() { show(index - 1); }
-    function start() { stop(); timer = setInterval(next, AUTO_MS); }
-    function stop() { if (timer) clearInterval(timer); }
 
-    nextBtn.addEventListener("click", () => { next(); start(); });
-    prevBtn.addEventListener("click", () => { prev(); start(); });
-    dots.forEach((d) => d.addEventListener("click", () => { show(parseInt(d.dataset.index, 10)); start(); }));
-    root.addEventListener("mouseenter", stop);
-    root.addEventListener("mouseleave", start);
-
-    start();
+    setInterval(next, AUTO_MS);
   }
 
   /* ---- Active nav link ---- */
