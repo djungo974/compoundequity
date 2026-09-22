@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consulting — Compound Equity</title>
+<meta name="description" content="Our assistant guides you through a structured questionnaire, then directs you to one of our three advisory plans centered on U.S. equities.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='19' fill='%23C1622D'/%3E%3Cpath d='M11 25V27M17 21V27M23 16V27' stroke='%23FBF5EC' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-title-key="meta.title.consulting">
+
+<header class="nav">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <svg viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="18" class="mark-a" stroke-width="1.4"/>
+        <path class="mark-a" d="M11 25V27M17 21V27M23 16V27" stroke-width="2.2" stroke-linecap="round"/>
+        <path class="mark-b" d="M11 19L17 14L23 16L29 9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path class="mark-b" d="M24.5 9H29V13.5" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="brand-name">Compound <b>Equity</b></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+      <li><a href="consulting.html" data-i18n="nav.consulting">Consulting</a></li>
+      <li><a href="about.html" data-i18n="nav.about">Philosophy</a></li>
+      <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-switch">
+        <button data-lang="fr">FR</button>
+        <button data-lang="en">EN</button>
+        <button data-lang="es">ES</button>
+        <button data-lang="de">DE</button>
+      </div>
+      <a href="contact.html" class="btn btn-primary btn-sm" data-magnetic data-i18n="nav.cta">Book a call</a>
+      <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-nav">
+  <button class="mobile-close" aria-label="Close">✕</button>
+  <a href="index.html" data-i18n="nav.home">Home</a>
+  <a href="consulting.html" data-i18n="nav.consulting">Consulting</a>
+  <a href="about.html" data-i18n="nav.about">Philosophy</a>
+  <a href="contact.html" data-i18n="nav.contact">Contact</a>
+  <div class="lang-switch">
+    <button data-lang="fr">FR</button><button data-lang="en">EN</button><button data-lang="es">ES</button>
+        <button data-lang="de">DE</button>
+  </div>
+  <a href="contact.html" class="btn btn-primary btn-block" data-i18n="nav.cta">Book a call</a>
+</div>
+
+<main>
+  <section class="page-hero section-cream">
+    <div class="page-hero-glow"></div>
+    <div class="container">
+      <div class="eyebrow" data-reveal data-i18n="consulting.hero.eyebrow">Our service</div>
+      <h1 data-reveal data-reveal-delay="1" data-i18n="consulting.hero.h1">Personalized guidance, designed as a conversation.</h1>
+      <p data-reveal data-reveal-delay="2" data-i18n="consulting.hero.p">Our assistant guides you through a structured questionnaire.</p>
+    </div>
+  </section>
+
+  <section class="section section-cream" style="padding-top:0;">
+    <div class="container">
+      <div class="note-box" data-reveal style="max-width:900px; margin:0 auto 60px;">
+        <strong data-i18n="consulting.disclaimer.title">Before you begin</strong><br>
+        <span data-i18n="consulting.disclaimer.text">Compound Equity offers an investment orientation and education service.</span>
+      </div>
+
+      <div class="section-head center" data-reveal>
+        <div class="eyebrow" style="justify-content:center" data-i18n="consulting.chat.eyebrow">Compound Equity Assistant</div>
+        <h2 data-i18n="consulting.chat.h2">Let's talk about your profile.</h2>
+        <p data-i18n="consulting.chat.sub">Four questions, one clear orientation.</p>
+      </div>
+
+      <div class="chat-shell" data-reveal>
+        <div class="chat-head">
+          <div class="avatar">CE</div>
+          <div class="who">
+            <b data-i18n="consulting.chat.name">Compound AI</b>
+            <span data-i18n="consulting.chat.status">Online</span>
+          </div>
+          <div class="status"><span class="dot"></span><span data-i18n="consulting.chat.status">Online</span></div>
+        </div>
+        <div class="chat-body" id="chatBody"></div>
+        <div class="chat-options" id="chatOptions"></div>
+        <div class="chat-restart">
+          <button class="btn btn-ghost btn-sm" id="chatRestart" hidden data-i18n="consulting.chat.restart">Restart the questionnaire</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-paper" id="pricing">
+    <div class="container">
+      <div class="section-head center" data-reveal>
+        <div class="eyebrow" style="justify-content:center" data-i18n="consulting.pricing.eyebrow">Our plans</div>
+        <h2 data-i18n="consulting.pricing.h2">Three levels of guidance.</h2>
+        <p data-i18n="consulting.pricing.sub">Choose the pace of support that matches your ambition.</p>
+      </div>
+
+      <div class="pricing-grid">
+        <!-- Foundations -->
+        <div class="plan" id="plan-foundations" data-reveal data-reveal-delay="1">
+          <div class="plan-name" data-i18n="plan.foundations.name">Foundations</div>
+          <h3 data-i18n="plan.foundations.name">Foundations</h3>
+          <p class="plan-desc" data-i18n="plan.foundations.desc">Start with method.</p>
+          <div class="plan-price">$<span data-i18n="plan.foundations.price">49</span><span data-i18n="plan.period"> / month</span></div>
+          <ul class="plan-features">
+            <li class="plan-feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="plan.foundations.f1">Full investor profile via our assistant</span></li>
+            <li class="plan-feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="plan.foundations.f2">Quarterly report</span></li>
+            <li class="plan-feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="plan.foundations.f3">Access to our research library</span></li>
+            <li class="plan-feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="plan.foundations.f4">Email support within 48h</span></li>
+          </ul>
+          <a href="contact.html" class="btn btn-ghost btn-block" data-i18n="plan.cta">Choose this plan</a>
+        </div>
+
+        <!-- Compounding (featured) -->
+        <div class="plan featured" id="plan-compounding" data-reveal data-reveal-delay="2">
+          <div class="plan-badge" data-i18n="plan.compounding.badge">Most popular</div>
+          <div class="plan-name" data-i18n="plan.compounding.name">Compounding</div>
+          <h3 data-i18n="plan.compounding.name">Compounding</h3>
+          <p class="plan-desc" data-i18n="plan.compounding.desc">Build with discipline.</p>
+          <div class="plan-price">$<span data-i18n="plan.compounding.price">149</span><span data-i18n="plan.period"> / month</span></div>
+          <ul class="plan-features">
+            <li class="plan-feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="plan.compounding.f1">Everything in Foundations, plus:</span></li>
+            <li class="plan-feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="plan.compounding.f2">Monthly portfolio review</span></li>
+            <li class="plan-feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="plan.compounding.f3">Alerts on our sector convictions</span></li>
+            <li class="plan-feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="plan.compounding.f4">Priority chat session</span></li>
+            <li class="plan-feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="plan.compounding.f5">Individual stock ideas (US)</span></li>
+          </ul>
+          <a href="contact.html" class="btn btn-primary btn-block" data-i18n="plan.cta">Choose this plan</a>
+        </div>
+
+        <!-- Legacy -->
+        <div class="plan" id="plan-legacy" data-reveal data-reveal-delay="3">
+          <div class="plan-name" data-i18n="plan.legacy.name">Legacy</div>
+          <h3 data-i18n="plan.legacy.name">Legacy</h3>
+          <p class="plan-desc" data-i18n="plan.legacy.desc">Full wealth-advisory support.</p>
+          <div class="plan-price">$<span data-i18n="plan.legacy.price">490</span><span data-i18n="plan.period"> / month</span></div>
+          <ul class="plan-features">
+            <li class="plan-feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="plan.legacy.f1">Everything in Compounding, plus:</span></li>
+            <li class="plan-feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="plan.legacy.f2">Quarterly video call with a senior advisor</span></li>
+            <li class="plan-feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="plan.legacy.f3">Bespoke multi-account strategy</span></li>
+            <li class="plan-feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="plan.legacy.f4">Tax & estate orientation review</span></li>
+            <li class="plan-feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-i18n="plan.legacy.f5">Dedicated line, priority reply within 24h</span></li>
+          </ul>
+          <a href="contact.html" class="btn btn-ghost btn-block" data-i18n="plan.cta">Choose this plan</a>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:40px;" data-reveal>
+        <span style="font-size:13px; color:var(--ink-faint); font-weight:600;" data-i18n="consulting.pricing.pay">Secure payment via</span>
+        <div class="pay-badges" style="justify-content:center; margin-top:12px;">
+          <span class="pay-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="M2 10h20"/></svg>
+            Stripe
+          </span>
+          <span class="pay-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 4h9a4 4 0 0 1 0 8H9l-1 8H5L7 4z"/></svg>
+            PayPal
+          </span>
+          <span class="pay-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8" stroke-linecap="round"/></svg>
+            Google Pay
+          </span>
+        </div>
+      </div>
+
+      <div class="note-box" data-reveal data-i18n="consulting.pricing.note" style="max-width:900px; margin:40px auto 0;">
+        Our plans are orientation and guidance services.
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <a href="index.html" class="brand">
+          <svg viewBox="0 0 40 40" fill="none">
+            <circle cx="20" cy="20" r="18" class="mark-a" stroke-width="1.4"/>
+            <path class="mark-a" d="M11 25V27M17 21V27M23 16V27" stroke-width="2.2" stroke-linecap="round"/>
+            <path class="mark-b" d="M11 19L17 14L23 16L29 9" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path class="mark-b" d="M24.5 9H29V13.5" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="brand-name">Compound <b>Equity</b></span>
+        </a>
+        <p class="footer-desc" data-i18n="footer.desc">Compound Equity guides individual investors with a conviction-led approach.</p>
+      </div>
+      <div>
+        <h5 data-i18n="footer.nav.title">Navigation</h5>
+        <ul>
+          <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+          <li><a href="consulting.html" data-i18n="nav.consulting">Consulting</a></li>
+          <li><a href="about.html" data-i18n="nav.about">Philosophy</a></li>
+          <li><a href="contact.html" data-i18n="nav.contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5 data-i18n="footer.legal.title">Legal</h5>
+        <ul>
+          <li><a href="#" data-i18n="footer.legal.privacy">Privacy Policy</a></li>
+          <li><a href="#" data-i18n="footer.legal.terms">Terms of Use</a></li>
+          <li><a href="#" data-i18n="footer.legal.risk">Risk Disclosure</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5 data-i18n="footer.contact.title">Contact</h5>
+        <ul>
+          <li><a href="mailto:contact@compoundequity.com">contact@compoundequity.com</a></li>
+          <li><a href="contact.html" data-i18n="nav.cta">Book a call</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span data-i18n="footer.rights">© 2026 Compound Equity LLC.</span>
+      <span>Compound Equity</span>
+    </div>
+    <p class="footer-legal" data-i18n="footer.legaltext">Compound Equity LLC is not a registered investment adviser.</p>
+  </div>
+</footer>
+
+<script src="js/i18n.js"></script>
+<script src="js/main.js"></script>
+<script src="js/chatbot.js"></script>
+</body>
+</html>
