@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact — [BRAND]</title>
-<meta name="description" content="Contact [BRAND] for corrections, press or subscription questions.">
+<title>Track record — [BRAND]</title>
+<meta name="description" content="A public log of every signal we publish and what happened next — including the ones we got wrong.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230E0B09'/%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%23E07A3A' stroke-width='2'/%3E%3Cpath d='M16 16L24 10' stroke='%23F0A56E' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -45,24 +45,38 @@
   <section class="page-hero">
     <div class="page-hero-glow"></div>
     <div class="container">
-      <div class="eyebrow" data-reveal>Contact</div>
-      <h1 data-reveal data-reveal-delay="1">Write to us.</h1>
-      <p data-reveal data-reveal-delay="2">One inbox, read by a human. Corrections get priority.</p>
+      <div class="eyebrow" data-reveal>Track record</div>
+      <h1 data-reveal data-reveal-delay="1">Every signal we publish, and what happened next.</h1>
+      <p data-reveal data-reveal-delay="2">A research publication should be judged on its record, not its promises. This log lists every signal we publish, its importance score, and how events actually unfolded — including the signals that turned out not to matter and the errors we corrected.</p>
     </div>
   </section>
 
   <section class="section" style="padding-top:0">
-    <div class="container grid-2" style="align-items:start">
-      <div class="card" data-reveal>
-        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div>
-        <h3>Email</h3>
-        <p style="font-size:18px; color:var(--text); margin-top:6px">[contact email]</p>
-        <p style="margin-top:14px">For corrections, please include the issue date and which signal you mean.</p>
+    <div class="container">
+      <div class="table-wrap" data-reveal>
+        <table class="table">
+          <thead>
+            <tr><th>Date</th><th>Sector</th><th>Signal</th><th>Score</th><th>What happened next</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="6"><div class="empty-state"><b>The log starts with our first issue.</b>Nothing has been published yet, so there is nothing to show. We won't fill this table with back-tested or hypothetical results.</div></td></tr>
+          </tbody>
+        </table>
       </div>
-      <div class="card" data-reveal data-reveal-delay="1">
-        <h3>What we can't help with</h3>
-        <p>We can't answer questions about your personal finances, tell you whether to buy, sell or hold anything, or review your portfolio. [BRAND] is a research publication, not an adviser. For advice on your own situation, please speak to a licensed professional.</p>
+      <div class="legend" data-reveal>
+        <span><i style="background:var(--ok)"></i>Confirmed — later events matched the signal's importance</span>
+        <span><i style="background:var(--text-faint)"></i>Faded — the signal turned out not to matter much</span>
+        <span><i style="background:var(--bad)"></i>Correction — something we published was wrong</span>
+        <span><i style="background:var(--accent)"></i>Pending — too early to tell</span>
       </div>
+    </div>
+  </section>
+
+  <section class="section section-raised">
+    <div class="container grid-3">
+      <div class="card" data-reveal data-reveal-delay="1"><h3>Nothing gets deleted</h3><p>Entries are added, never removed. If a signal is revised, the original stays visible next to the update.</p></div>
+      <div class="card" data-reveal data-reveal-delay="2"><h3>Corrections are dated</h3><p>When we get a fact wrong, we say so in the next issue and log the correction here with the date.</p></div>
+      <div class="card" data-reveal data-reveal-delay="3"><h3>This is not a performance record</h3><p>We track whether signals were accurate and important — not whether anyone made or lost money on them.</p></div>
     </div>
   </section>
 </main>

@@ -1,12 +1,12 @@
 /* ==========================================================================
-   Compound Equity — shared interactions
-   Custom cursor · sticky nav · scroll reveal · counters · magnetic buttons
+   [BRAND] — shared interactions
+   Custom cursor · sticky nav · scroll reveal · counters · magnetic buttons ·
+   hero fade carousel · pre-launch subscribe forms
    ========================================================================== */
 
 (function () {
   "use strict";
 
-  /* ---- Custom cursor ---- */
   function initCursor() {
     if (window.matchMedia("(hover: none)").matches) return;
     const dot = document.createElement("div");
@@ -18,29 +18,25 @@
 
     let mx = window.innerWidth / 2, my = window.innerHeight / 2;
     let rx = mx, ry = my;
-
     window.addEventListener("mousemove", (e) => {
       mx = e.clientX; my = e.clientY;
       dot.style.left = mx + "px";
       dot.style.top = my + "px";
     });
-
-    function loop() {
+    (function loop() {
       rx += (mx - rx) * 0.18;
       ry += (my - ry) * 0.18;
       ring.style.left = rx + "px";
       ring.style.top = ry + "px";
       requestAnimationFrame(loop);
-    }
-    loop();
+    })();
 
-    document.querySelectorAll("a, button, .card, .plan, .chat-opt, input, textarea, select").forEach((el) => {
+    document.querySelectorAll("a, button, summary, input, .card, .plan").forEach((el) => {
       el.addEventListener("mouseenter", () => ring.classList.add("is-hover"));
       el.addEventListener("mouseleave", () => ring.classList.remove("is-hover"));
     });
   }
 
-  /* ---- Sticky nav ---- */
   function initNavScroll() {
     const nav = document.querySelector(".nav");
     if (!nav) return;
@@ -49,7 +45,6 @@
     window.addEventListener("scroll", onScroll, { passive: true });
   }
 
-  /* ---- Mobile menu ---- */
   function initMobileNav() {
     const burger = document.querySelector(".nav-burger");
     const panel = document.querySelector(".mobile-nav");
@@ -57,121 +52,93 @@
     if (!burger || !panel) return;
     const toggle = (open) => panel.classList.toggle("is-open", open);
     burger.addEventListener("click", () => toggle(true));
-    close && close.addEventListener("click", () => toggle(false));
+    if (close) close.addEventListener("click", () => toggle(false));
     panel.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => toggle(false)));
   }
 
-  /* ---- Scroll reveal ---- */
   function initReveal() {
     const els = document.querySelectorAll("[data-reveal]");
     if (!els.length) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            io.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15, rootMargin: "0px 0px -60px 0px" }
-    );
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -60px 0px" });
     els.forEach((el) => io.observe(el));
   }
 
-  /* ---- Animated counters ---- */
   function animateCounter(el) {
-    const raw = el.textContent.trim();
-    const match = raw.match(/^([^\d]*)([\d.,]+)(.*)$/);
+    const match = el.textContent.trim().match(/^([^\d]*)([\d.,]+)(.*)$/);
     if (!match) return;
     const [, prefix, numStr, suffix] = match;
     const target = parseFloat(numStr.replace(",", "."));
     if (isNaN(target)) return;
-    const duration = 1400;
     const start = performance.now();
-    const decimals = numStr.includes(".") ? numStr.split(".")[1].length : 0;
-
-    function frame(now) {
-      const p = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - p, 3);
-      const value = (target * eased).toFixed(decimals);
-      el.textContent = prefix + value + suffix;
+    (function frame(now) {
+      const p = Math.min(1, (now - start) / 1200);
+      el.textContent = prefix + Math.round(target * (1 - Math.pow(1 - p, 3))) + suffix;
       if (p < 1) requestAnimationFrame(frame);
       else el.textContent = prefix + numStr + suffix;
-    }
-    requestAnimationFrame(frame);
+    })(start);
   }
 
   function initCounters() {
     const nums = document.querySelectorAll("[data-counter]");
     if (!nums.length) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            animateCounter(entry.target);
-            io.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.6 }
-    );
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.6 });
     nums.forEach((el) => io.observe(el));
   }
 
-  /* ---- Magnetic buttons ---- */
   function initMagnetic() {
     if (window.matchMedia("(hover: none)").matches) return;
     document.querySelectorAll("[data-magnetic]").forEach((btn) => {
       btn.addEventListener("mousemove", (e) => {
         const r = btn.getBoundingClientRect();
-        const x = e.clientX - r.left - r.width / 2;
-        const y = e.clientY - r.top - r.height / 2;
-        btn.style.transform = `translate(${x * 0.25}px, ${y * 0.35}px)`;
+        btn.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.25}px, ${(e.clientY - r.top - r.height / 2) * 0.35}px)`;
       });
-      btn.addEventListener("mouseleave", () => (btn.style.transform = "translate(0,0)"));
+      btn.addEventListener("mouseleave", () => (btn.style.transform = ""));
     });
   }
 
-  /* ---- Hero parallax ---- */
-  function initParallax() {
-    const layers = document.querySelectorAll("[data-parallax]");
-    if (!layers.length) return;
-    window.addEventListener(
-      "scroll",
-      () => {
-        const y = window.scrollY;
-        layers.forEach((el) => {
-          const speed = parseFloat(el.getAttribute("data-parallax")) || 0.15;
-          el.style.transform = `translateY(${y * speed}px)`;
-        });
-      },
-      { passive: true }
-    );
-  }
-
-  /* ---- Hero image carousel — fully automatic fade, no controls ---- */
   function initCarousel() {
     const root = document.getElementById("heroCarousel");
     if (!root) return;
     const slides = Array.from(root.querySelectorAll(".carousel-slide"));
+    if (slides.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let index = 0;
-    const AUTO_MS = 7000;
-
-    function next() {
+    setInterval(() => {
       index = (index + 1) % slides.length;
       slides.forEach((s, n) => s.classList.toggle("is-active", n === index));
-    }
-
-    setInterval(next, AUTO_MS);
+    }, 7000);
   }
 
-  /* ---- Active nav link ---- */
+  // No newsletter platform is wired yet, so these forms must not pretend to subscribe
+  // anyone. They collect nothing and say so; the platform embed replaces them at launch.
+  function initSubscribeForms() {
+    document.querySelectorAll("form[data-subscribe]").forEach((form) => {
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const msg = form.parentElement.querySelector(".subscribe-msg");
+        if (msg) msg.classList.add("is-visible");
+        form.reset();
+      });
+    });
+  }
+
   function markActiveNav() {
     const path = location.pathname.split("/").pop() || "index.html";
-    document.querySelectorAll(".nav-links a, .mobile-nav a").forEach((a) => {
-      const href = a.getAttribute("href");
-      if (href === path || (path === "" && href === "index.html")) a.classList.add("active");
+    document.querySelectorAll(".nav-links a, .mobile-nav a, .legal-nav a").forEach((a) => {
+      if (a.getAttribute("href") === path) a.classList.add("active");
     });
   }
 
@@ -182,8 +149,8 @@
     initReveal();
     initCounters();
     initMagnetic();
-    initParallax();
     initCarousel();
+    initSubscribeForms();
     markActiveNav();
   });
 })();
