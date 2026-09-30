@@ -218,7 +218,7 @@ section { position: relative; }
 .mini-row .bar { flex: 1; height: 7px; border-radius: 4px; background: var(--surface-2); }
 
 /* ---------- Steps ---------- */
-.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; counter-reset: step; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; counter-reset: step; }
 .step { position: relative; padding: 58px 22px 26px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-m); }
 .step::before {
   counter-increment: step; content: counter(step, decimal-leading-zero);
@@ -337,7 +337,7 @@ section { position: relative; }
 .cta-band p { margin-top: 12px; }
 
 /* ---------- Principles / facts strip ---------- */
-.facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .fact { padding: 26px 24px; border-radius: var(--radius-m); background: var(--surface); border: 1px solid var(--line); }
 .fact b { display: block; font-family: var(--font-display); font-size: 36px; color: var(--accent-soft); }
 .fact span { font-size: 14px; color: var(--text-soft); }
