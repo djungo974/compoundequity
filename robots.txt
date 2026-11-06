@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /compoundequity/welcome.html
+
+Sitemap: https://djungo974.github.io/compoundequity/sitemap.xml
