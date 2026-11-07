@@ -1,4 +1,4 @@
 User-agent: *
-Disallow: /compoundequity/welcome.html
+Disallow: /welcome.html
 
-Sitemap: https://djungo974.github.io/compoundequity/sitemap.xml
+Sitemap: https://metalsandmachines.com/sitemap.xml
