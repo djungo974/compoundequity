@@ -570,3 +570,29 @@ section { position: relative; }
 
 .footer-credits { margin-top: 10px; font-size: 11.5px; color: var(--text-faint); line-height: 1.6; }
 .footer-credits a { color: var(--text-soft); border-bottom: 1px dotted var(--line-strong); }
+
+/* ---------- Plans section over a photograph (home page) ----------
+   NASA Earth Observatory's "City Lights of the United States 2012" (public domain), saved already muted
+   (55% saturation, 62% brightness) so no CSS filter runs while scrolling. The section stays dark in both
+   themes, like the hero; cards and the table sit on translucent panels so the photo shows between them. */
+.section-photo {
+  --bg: #0F1317; --bg-raised: #141A1F; --surface: #1A2128; --surface-2: #222A32;
+  --text: #EEF2F5; --text-soft: #BCB6AE; --text-faint: #8D877F;
+  --line: rgba(220, 230, 240, 0.09); --line-strong: rgba(220, 230, 240, 0.17);
+  --accent: #7FA9D8; --accent-deep: #5E8CC2; --accent-soft: #A8C6E8; --accent-tint: rgba(127, 169, 216, 0.12); --on-accent: #0B1520;
+  --ok: #62B883; --bad: #E2665C; --hover-tint: rgba(220, 230, 240, 0.07); --accent-glow: rgba(127, 169, 216, 0.7);
+  color: var(--text);
+  position: relative; isolation: isolate; overflow: hidden;
+  background: #0F1317 url("../assets/img/plans-night.jpg") 50% 35% / cover no-repeat;
+}
+.section-photo::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(15,19,23,.80) 0%, rgba(15,19,23,.50) 40%, rgba(15,19,23,.70) 70%, rgba(15,19,23,.92) 100%);
+}
+.section-photo .plan { background: rgba(26, 33, 40, 0.86); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.section-photo .table-wrap { background: rgba(15, 19, 23, 0.80); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+/* Phones: the section is very tall, so the photo only sits behind its top (title and first cards) and fades out. */
+@media (max-width: 600px) {
+  .section-photo { background-size: auto 1300px; background-position: 64% 0; }
+  .section-photo::before { background: linear-gradient(180deg, rgba(15,19,23,.80) 0, rgba(15,19,23,.50) 420px, rgba(15,19,23,.85) 1000px, #0F1317 1300px); }
+}
