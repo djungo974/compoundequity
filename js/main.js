@@ -194,6 +194,38 @@
     }
   }
 
+  // Sun/moon button in the nav. The visitor's choice is kept in this browser ("mm-theme", read before the page
+  // paints by a one-line script in every page's head); without a choice the site follows the system setting.
+  function initThemeToggle() {
+    const slot = document.querySelector(".nav-right");
+    if (!slot) return;
+    const root = document.documentElement;
+    const media = window.matchMedia("(prefers-color-scheme: light)");
+    const current = () => root.getAttribute("data-theme") || (media.matches ? "light" : "dark");
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "theme-toggle";
+    btn.innerHTML =
+      '<svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>' +
+      '<svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>';
+    const sync = () => {
+      const mode = current();
+      const next = mode === "light" ? "dark" : "light";
+      btn.dataset.mode = mode;
+      btn.setAttribute("aria-label", "Switch to " + next + " mode");
+      btn.title = "Switch to " + next + " mode";
+    };
+    btn.addEventListener("click", () => {
+      const next = current() === "light" ? "dark" : "light";
+      root.setAttribute("data-theme", next);
+      try { localStorage.setItem("mm-theme", next); } catch (e) { /* storage blocked: the choice lasts for this page */ }
+      sync();
+    });
+    if (media.addEventListener) media.addEventListener("change", sync);
+    slot.insertBefore(btn, slot.firstChild);
+    sync();
+  }
+
   // Phones: a slim "Join free on Telegram" bar at the bottom once the visitor is past the first screen.
   // It steps aside while the page's own sign-up block or the footer is on screen.
   function initMobileCta() {
@@ -248,6 +280,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
+    initThemeToggle();
     initCursor();
     initNavScroll();
     initMobileNav();
