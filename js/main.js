@@ -135,6 +135,18 @@
     return code;
   }
 
+  // Every Telegram sign-up button ("Join free on Telegram", "Unlock Pro in Telegram") gets the same look:
+  // the animated .btn-tg style (css) and a Telegram plane icon (Tabler "brand-telegram", MIT licence).
+  // Pro payment buttons (data-pay) keep their own style.
+  function initTelegramButtons() {
+    const icon = '<svg class="tg-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 10l-4 4l6 6l4 -16l-18 7l4 2l2 6l3 -4"/></svg>';
+    document.querySelectorAll("a.btn[data-bot-link]:not([data-pay]), a.btn[data-claim]").forEach((a) => {
+      a.classList.remove("btn-ghost");
+      a.classList.add("btn-primary", "btn-tg");
+      if (!a.querySelector(".tg-icon")) a.insertAdjacentHTML("afterbegin", icon);
+    });
+  }
+
   // Free sign-ups go through our bot (it counts referrals); Pro buttons go to Stripe with the referral attached.
   function initTelegramLinks() {
     const ref = referralCode();
@@ -280,6 +292,7 @@
     initCarousel();
     initMobileCta();
     initTelegramLinks();
+    initTelegramButtons();
     initWelcome();
     markActiveNav();
   });
