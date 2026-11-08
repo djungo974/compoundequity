@@ -571,12 +571,14 @@ section { position: relative; }
 .footer-credits { margin-top: 10px; font-size: 11.5px; color: var(--text-faint); line-height: 1.6; }
 .footer-credits a { color: var(--text-soft); border-bottom: 1px dotted var(--line-strong); }
 
-/* ---------- Plans section over a photograph (home page) ----------
-   NASA Earth Observatory's "City Lights of the United States 2012" (public domain), saved lightly muted
-   (75% saturation, 85% brightness) so no CSS filter runs while scrolling. The whole photo spans the width of the
-   screen from the top of the section, so the outline of the United States reads at a glance, then fades into the
-   background (the photo is 3:2, so its height is 66.7vw). The section stays dark in both themes, like the hero;
-   cards and the table sit on translucent panels so the lights show between them. */
+/* ---------- Sections over a photograph (home page) ----------
+   Photos are saved already muted, so no CSS filter runs while scrolling. These sections stay dark in both
+   themes, like the hero; cards, the table and the call-to-action sit on translucent panels.
+   - Plans: NASA Earth Observatory, "City Lights of the United States 2012" (public domain), 75% saturation, 85%
+     brightness. The whole photo spans the screen width from the top of the section so the outline of the United
+     States reads at a glance, then fades into the background (the photo is 3:2, so its height is 66.7vw).
+   - Final call to action: U.S. Department of Energy, "Gas centrifuge cascade" (public domain), 70% saturation,
+     80% brightness. */
 .section-photo {
   --bg: #0F1317; --bg-raised: #141A1F; --surface: #1A2128; --surface-2: #222A32;
   --text: #EEF2F5; --text-soft: #BCB6AE; --text-faint: #8D877F;
@@ -585,20 +587,29 @@ section { position: relative; }
   --ok: #62B883; --bad: #E2665C; --hover-tint: rgba(220, 230, 240, 0.07); --accent-glow: rgba(127, 169, 216, 0.7);
   color: var(--text);
   position: relative; isolation: isolate; overflow: hidden;
-  background: #0F1317 url("../assets/img/plans-night.jpg") 50% 0 / 100% auto no-repeat;
+  background-color: #0F1317; background-repeat: no-repeat;
 }
-.section-photo::before {
-  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background: linear-gradient(180deg, rgba(15,19,23,.55) 0, rgba(15,19,23,.22) 18vw, rgba(15,19,23,.35) 45vw, #0F1317 66.7vw);
-}
+.section-photo::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; }
 .section-photo .section-head { text-shadow: 0 1px 2px rgba(0,0,0,.7), 0 0 18px rgba(6,9,12,.95); }
 .section-photo .section-head p { color: #D3D8DD; }
 .section-photo .plan { background: rgba(26, 33, 40, 0.82); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }
 .section-photo .table-wrap { background: rgba(15, 19, 23, 0.80); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.section-photo .cta-band {
+  background: radial-gradient(120% 140% at 100% 0%, rgba(127,169,216,.22), transparent 55%), rgba(20, 26, 31, 0.72);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+
+.section-photo--plans { background-image: url("../assets/img/plans-night.jpg"); background-position: 50% 0; background-size: 100% auto; }
+.section-photo--plans::before { background: linear-gradient(180deg, rgba(15,19,23,.55) 0, rgba(15,19,23,.22) 18vw, rgba(15,19,23,.35) 45vw, #0F1317 66.7vw); }
+
+.section-photo--cta { background-image: url("../assets/img/cta-centrifuges.jpg"); background-position: 50% 45%; background-size: cover; }
+.section-photo--cta::before { background: linear-gradient(180deg, rgba(15,19,23,.85) 0%, rgba(15,19,23,.40) 30%, rgba(15,19,23,.40) 70%, rgba(10,8,6,.95) 100%); }
+
 /* Phones: the map sits behind the title, a little larger and lower so the country stays readable. */
 @media (max-width: 600px) {
-  .section-photo { background-size: 125% auto; background-position: 55% 24px; }
-  .section-photo::before { background: linear-gradient(180deg, rgba(15,19,23,.50) 0, rgba(15,19,23,.20) 30vw, rgba(15,19,23,.45) 70vw, #0F1317 calc(24px + 83.4vw)); }
+  .section-photo--plans { background-size: 125% auto; background-position: 55% 24px; }
+  .section-photo--plans::before { background: linear-gradient(180deg, rgba(15,19,23,.50) 0, rgba(15,19,23,.20) 30vw, rgba(15,19,23,.45) 70vw, #0F1317 calc(24px + 83.4vw)); }
+  .section-photo--cta { background-position: 40% 50%; }
 }
 
 /* ---------- Scrollbar ----------
