@@ -17,33 +17,22 @@
   };
   const REF_RE = /^[A-HJ-NP-Z2-9]{6}$/;
 
+  // Radar ping: the normal pointer stays; entering a link or a button sends one blue ring out from the pointer.
+  // Mouse and trackpad only, and never for visitors who asked their system to reduce motion.
   function initCursor() {
-    if (window.matchMedia("(hover: none)").matches) return;
-    const dot = document.createElement("div");
-    const ring = document.createElement("div");
-    dot.className = "cursor-dot";
-    ring.className = "cursor-ring";
-    document.body.appendChild(dot);
-    document.body.appendChild(ring);
-
-    let mx = window.innerWidth / 2, my = window.innerHeight / 2;
-    let rx = mx, ry = my;
-    window.addEventListener("mousemove", (e) => {
-      mx = e.clientX; my = e.clientY;
-      dot.style.left = mx + "px";
-      dot.style.top = my + "px";
-    });
-    (function loop() {
-      rx += (mx - rx) * 0.18;
-      ry += (my - ry) * 0.18;
-      ring.style.left = rx + "px";
-      ring.style.top = ry + "px";
-      requestAnimationFrame(loop);
-    })();
-
-    document.querySelectorAll("a, button, summary, input, .card, .plan").forEach((el) => {
-      el.addEventListener("mouseenter", () => ring.classList.add("is-hover"));
-      el.addEventListener("mouseleave", () => ring.classList.remove("is-hover"));
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    document.addEventListener("pointerover", (e) => {
+      if (e.pointerType && e.pointerType !== "mouse") return;
+      const target = e.target.closest && e.target.closest("a, button, summary, [role='button']");
+      if (!target || target.contains(e.relatedTarget)) return;
+      const ping = document.createElement("span");
+      ping.className = "cursor-ping";
+      ping.setAttribute("aria-hidden", "true");
+      ping.style.left = e.clientX + "px";
+      ping.style.top = e.clientY + "px";
+      document.body.appendChild(ping);
+      ping.addEventListener("animationend", () => ping.remove());
     });
   }
 

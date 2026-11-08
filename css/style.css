@@ -137,18 +137,16 @@ button { font-family: var(--font-body); cursor: pointer; }
 .eyebrow::before { content: ""; width: 22px; height: 1px; background: var(--accent); }
 .mono { font-family: var(--font-mono); }
 
-/* ---------- Custom cursor ---------- */
-.cursor-dot, .cursor-ring {
-  position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
-  border-radius: 50%; transform: translate(-50%, -50%);
+/* ---------- Radar ping on links and buttons (see initCursor in main.js) ---------- */
+.cursor-ping {
+  position: fixed; width: 60px; height: 60px; margin: -30px 0 0 -30px; pointer-events: none; z-index: 9999;
+  border: 1.5px solid var(--accent); border-radius: 50%;
+  animation: cursor-ping .6s var(--ease-soft) forwards;
 }
-.cursor-dot { width: 6px; height: 6px; background: var(--accent); }
-.cursor-ring {
-  width: 34px; height: 34px; border: 1px solid rgba(127,169,216,.6);
-  transition: width .25s var(--ease), height .25s var(--ease), background-color .25s var(--ease);
+@keyframes cursor-ping {
+  from { transform: scale(.14); opacity: .9; }
+  to   { transform: scale(1);   opacity: 0; }
 }
-.cursor-ring.is-hover { width: 56px; height: 56px; background: rgba(127,169,216,.08); }
-@media (hover: none), (max-width: 860px) { .cursor-dot, .cursor-ring { display: none; } }
 
 /* ---------- Nav ---------- */
 .nav {
