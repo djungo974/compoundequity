@@ -368,7 +368,21 @@ section { position: relative; }
 .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; align-items: stretch; }
 .plan { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-l); padding: 34px 30px; display: flex; flex-direction: column; position: relative; }
 .plan.featured { border-color: rgba(127,169,216,.6); box-shadow: 0 0 0 1px rgba(127,169,216,.25), 0 40px 80px -40px rgba(127,169,216,.35); }
-.plan-badge { position: absolute; top: 20px; right: 20px; background: var(--accent); color: var(--on-accent); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 5px 11px; border-radius: 999px; }
+/* Gold "2 months free" badge on the annual plan, with a slow light sweep (still for visitors who reduce motion). */
+.plan-badge {
+  position: absolute; top: 20px; right: 20px; overflow: hidden; isolation: isolate;
+  font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px;
+  color: #3B2A06; text-shadow: 0 1px 0 rgba(255, 244, 214, .5);
+  background: linear-gradient(135deg, #FBE7A6 0%, #E7BC57 38%, #C8962B 62%, #F3D785 100%);
+  border: 1px solid rgba(255, 236, 180, .65);
+  box-shadow: 0 6px 18px -6px rgba(214, 164, 55, .65), inset 0 1px 0 rgba(255, 250, 230, .7);
+}
+.plan-badge::after {
+  content: ""; position: absolute; z-index: -1; top: -30%; bottom: -30%; left: -70%; width: 50%; pointer-events: none;
+  transform: skewX(-20deg); background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .75), transparent);
+  animation: tg-shine 5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) { .plan-badge::after { display: none; } }
 .plan-name { font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-soft); font-weight: 600; }
 .plan h3 { font-size: 24px; margin: 10px 0 4px; }
 .plan-price { font-family: var(--font-display); font-size: 40px; font-weight: 700; margin: 14px 0 2px; }
