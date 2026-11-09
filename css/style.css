@@ -800,3 +800,29 @@ html { scrollbar-width: thin; scrollbar-color: var(--line-strong) var(--bg); }
   .circuit::before { animation: none; }
   .circuit-step { opacity: 1; transform: none; transition: none; }
 }
+
+/* ---------- Site name "glow up" (after 21st.dev's Shimmer Text / Gradient Text) ----------
+   Bigger name in the nav; a light sweeps across the letters every 7 s; the radar sweep in the logo turns
+   (8 s a turn) and the blip lights up as the sweep passes it. Everything stops for visitors who reduce motion. */
+.nav .brand { font-size: 23px; gap: 12px; }
+.nav .brand svg { width: 34px; height: 34px; filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 55%, transparent)); transition: filter .4s var(--ease); }
+.nav .brand:hover svg { filter: drop-shadow(0 0 11px color-mix(in srgb, var(--accent) 80%, transparent)); }
+.brand span {
+  background: linear-gradient(100deg, var(--text) 0%, var(--text) 38%, var(--accent-soft) 50%, var(--text) 62%, var(--text) 100%);
+  background-size: 300% 100%; background-position: 100% 0;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: brand-shimmer 7s ease-in-out infinite;
+}
+@keyframes brand-shimmer { 0%, 55% { background-position: 100% 0; } 85%, 100% { background-position: 0% 0; } }
+.brand .sweep { transform-box: view-box; transform-origin: 16px 16px; animation: radar-sweep 8s linear infinite; }
+@keyframes radar-sweep { to { transform: rotate(360deg); } }
+/* The blip sits about 75 degrees after the sweep's starting angle: it flashes when the sweep reaches it. */
+.brand .blip { animation: radar-blip 8s linear infinite; }
+@keyframes radar-blip { 0%, 18% { opacity: .3; } 21% { opacity: 1; } 60%, 100% { opacity: .3; } }
+@media (max-width: 600px) {
+  .nav .brand { font-size: 20px; gap: 10px; }
+  .nav .brand svg { width: 30px; height: 30px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand span, .brand .sweep, .brand .blip { animation: none; }
+}
