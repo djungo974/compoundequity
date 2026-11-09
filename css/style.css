@@ -749,3 +749,45 @@ html { scrollbar-width: thin; scrollbar-color: var(--line-strong) var(--bg); }
   .source-strip-track ul[aria-hidden] { display: none; }
   .tg-phone { transform: none; }
 }
+
+/* ---------- How it works: three steps on a circuit ----------
+   A line joins the three nodes and a light pulse runs along it; main.js lights the steps in turn when the
+   section comes into view. On phones the circuit turns vertical. */
+.circuit { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; list-style: none; margin: 56px 0 0; padding: 0; }
+.circuit::before {
+  content: ""; position: absolute; top: 34px; left: calc(100% / 6); right: calc(100% / 6); height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-soft), transparent) -50% 0 / 30% 100% no-repeat, var(--line-strong);
+  animation: circuit-run 3.2s linear infinite;
+}
+@keyframes circuit-run { to { background-position: 150% 0, 0 0; } }
+.circuit-step { position: relative; text-align: center; opacity: .45; transform: translateY(10px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
+.circuit-step.is-on { opacity: 1; transform: none; }
+.circuit-node {
+  width: 68px; height: 68px; margin: 0 auto; border-radius: 50%; display: grid; place-items: center; position: relative; z-index: 1;
+  background: var(--surface); border: 1px solid var(--line-strong); color: var(--accent-soft);
+  transition: border-color .6s var(--ease), box-shadow .6s var(--ease);
+}
+.circuit-node svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.circuit-step.is-on .circuit-node { border-color: var(--accent); box-shadow: 0 0 0 7px var(--accent-tint), 0 0 28px color-mix(in srgb, var(--accent) 40%, transparent); }
+.circuit-step h3 { margin-top: 18px; font-size: 18px; }
+.circuit-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 12px 0 0; padding: 0; list-style: none; }
+.circuit-chips li { font-size: 12.5px; padding: 4px 11px; border-radius: 999px; background: var(--accent-tint); border: 1px solid var(--line); color: var(--text-soft); }
+.circuit-chips .ok { color: var(--ok); margin-right: 5px; }
+.circuit-note { margin-top: 10px; font-size: 12.5px; color: var(--text-faint); }
+@media (max-width: 760px) {
+  .circuit { grid-template-columns: 1fr; gap: 30px; margin-top: 40px; }
+  .circuit::before {
+    top: 34px; bottom: 34px; left: 33px; right: auto; width: 2px; height: auto;
+    background: linear-gradient(180deg, transparent, var(--accent-soft), transparent) 0 -50% / 100% 30% no-repeat, var(--line-strong);
+    animation-name: circuit-run-v;
+  }
+  .circuit-step { display: grid; grid-template-columns: 68px minmax(0, 1fr); column-gap: 18px; text-align: left; align-items: start; }
+  .circuit-node { grid-row: 1 / span 3; margin: 0; }
+  .circuit-step h3 { margin-top: 20px; }
+  .circuit-chips { justify-content: flex-start; }
+}
+@keyframes circuit-run-v { to { background-position: 0 150%, 0 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .circuit::before { animation: none; }
+  .circuit-step { opacity: 1; transform: none; transition: none; }
+}

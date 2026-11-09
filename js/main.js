@@ -169,6 +169,20 @@
     update();
   }
 
+  // How it works: the three steps of the circuit light up one after the other when it comes into view.
+  function initCircuit() {
+    const circuit = document.querySelector("[data-circuit]");
+    if (!circuit) return;
+    const steps = Array.from(circuit.querySelectorAll(".circuit-step"));
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const light = () => steps.forEach((s, i) => setTimeout(() => s.classList.add("is-on"), reduce ? 0 : 150 + 380 * i));
+    if (reduce || !("IntersectionObserver" in window)) { light(); return; }
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) { light(); io.disconnect(); }
+    }, { threshold: 0.35 });
+    io.observe(circuit);
+  }
+
   // Every Telegram sign-up button ("Join free on Telegram", "Unlock Pro in Telegram") gets the same look:
   // the animated .btn-tg style (css) and a Telegram plane icon (Tabler "brand-telegram", MIT licence).
   // Pro payment buttons (data-pay) keep their own style.
@@ -329,6 +343,7 @@
     initTelegramButtons();
     initSpotlight();
     initPhoneTilt();
+    initCircuit();
     initWelcome();
     markActiveNav();
   });
