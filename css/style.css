@@ -90,9 +90,9 @@
   --mining: #E3AE55; --uranium: #B7D36B; --defense: #B39DDB; --hover-tint: rgba(220, 230, 240, 0.07);
   color: var(--text);
 }
-:root[data-theme="light"] .hero-scrim { background: linear-gradient(90deg, rgba(15,19,23,.94) 0%, rgba(15,19,23,.78) 42%, rgba(15,19,23,.35) 100%); }
+:root[data-theme="light"] .hero-scrim { background: linear-gradient(90deg, rgba(15,19,23,.80) 0%, rgba(15,19,23,.52) 42%, rgba(15,19,23,.08) 100%); }
 @media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) .hero-scrim { background: linear-gradient(90deg, rgba(15,19,23,.94) 0%, rgba(15,19,23,.78) 42%, rgba(15,19,23,.35) 100%); }
+  :root:not([data-theme="dark"]) .hero-scrim { background: linear-gradient(90deg, rgba(15,19,23,.80) 0%, rgba(15,19,23,.52) 42%, rgba(15,19,23,.08) 100%); }
 }
 
 /* Sun/moon button (added to the nav by main.js): shows the theme you would switch to. */
@@ -212,12 +212,15 @@ button { font-family: var(--font-body); cursor: pointer; }
 .hero-scrim {
   position: absolute; inset: 0; z-index: 2; pointer-events: none;
   background:
-    linear-gradient(90deg, rgba(15,19,23,.94) 0%, rgba(15,19,23,.78) 42%, rgba(15,19,23,.35) 100%),
+    linear-gradient(180deg, rgba(15,19,23,.62) 0%, rgba(15,19,23,0) 22%),
+    linear-gradient(90deg, rgba(15,19,23,.80) 0%, rgba(15,19,23,.52) 42%, rgba(15,19,23,.08) 100%),
     linear-gradient(0deg, rgba(15,19,23,1) 0%, transparent 30%);
 }
 .hero-overlay { position: absolute; inset: 0; z-index: 3; display: flex; align-items: center; padding-top: 80px; }
 .hero-overlay .container { width: 100%; }
 .hero-overlay h1 { font-size: clamp(38px, 5.4vw, 70px); max-width: 820px; }
+/* The photos show through more, so the hero text carries a soft shadow to stay readable on bright areas. */
+.hero-overlay h1, .hero-sub, .hero-overlay .eyebrow { text-shadow: 0 2px 18px rgba(0, 0, 0, .55), 0 1px 3px rgba(0, 0, 0, .45); }
 .hero-overlay h1 em { font-style: italic; color: var(--accent-soft); }
 .hero-sub { margin-top: 22px; font-size: 18px; max-width: 560px; color: #F2F4F6; }
 .hero-cta { margin-top: 34px; display: flex; gap: 12px; flex-wrap: wrap; }
@@ -235,6 +238,10 @@ button { font-family: var(--font-body); cursor: pointer; }
 .photo-mining  { background-image: url("../assets/img/hero-metals.jpg"); }
 .photo-uranium { background-image: url("../assets/img/hero-uranium.jpg"); }
 .photo-defense { background-image: url("../assets/img/hero-defense.jpg"); }
+/* Hero slide only: the B-52 and fighters fly at the very top of this photo, so on wide screens the photo starts
+   below the nav; the strip above it takes the sky colour and is shaded by the scrim. */
+.carousel-slide.photo-defense { background-color: #C8D1E5; background-repeat: no-repeat; background-position: 50% 92px; }
+@media (max-width: 860px) { .carousel-slide.photo-defense { background-position: 50% 64px; } }
 
 /* ---------- Sections ---------- */
 section { position: relative; }
@@ -502,7 +509,7 @@ section { position: relative; }
   .container { padding: 0 20px; }
   .hero-carousel { height: 100svh; min-height: 600px; }
   .hero-overlay { align-items: flex-start; padding-top: 120px; }
-  .hero-scrim { background: linear-gradient(180deg, rgba(15,19,23,.9) 0%, rgba(15,19,23,.8) 60%, rgba(15,19,23,1) 100%); }
+  .hero-scrim { background: linear-gradient(180deg, rgba(15,19,23,.74) 0%, rgba(15,19,23,.58) 60%, rgba(15,19,23,1) 100%); }
   .scroll-cue { display: none; }
   .section { padding: 76px 0; }
   .grid-2, .grid-3, .pricing-grid, .steps, .detail-cols, .facts { grid-template-columns: 1fr; }
@@ -533,6 +540,8 @@ section { position: relative; }
   /* The hero grows with its text instead of cutting it off on short screens (iPhone SE and the like). */
   .hero-carousel { height: auto; min-height: 100svh; max-height: none; }
   .hero-overlay { position: relative; inset: auto; padding: 108px 0 44px; }
+  /* The hero has no fixed height here, so the photos fill it from an absolute layer (otherwise they collapse to zero height). */
+  .carousel-track { position: absolute; inset: 0; height: auto; }
   .hero-sub { font-size: 16px; margin-top: 16px; }
   .hero-cta { flex-direction: column; margin-top: 26px; }
   .hero-cta .btn, .cta-band .btn { width: 100%; }
