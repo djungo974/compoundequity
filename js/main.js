@@ -135,6 +135,40 @@
     return code;
   }
 
+  // Spotlight: a soft light follows the mouse over plan, benefit and sector cards (mouse and trackpad only).
+  function initSpotlight() {
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    document.querySelectorAll(".plan, .card, .sector-card").forEach((el) => {
+      el.classList.add("spot");
+      el.addEventListener("pointermove", (e) => {
+        const r = el.getBoundingClientRect();
+        el.style.setProperty("--mx", (e.clientX - r.left) + "px");
+        el.style.setProperty("--my", (e.clientY - r.top) + "px");
+      });
+      el.addEventListener("pointerleave", () => { el.style.removeProperty("--mx"); el.style.removeProperty("--my"); });
+    });
+  }
+
+  // "This is what arrives": the Telegram phone leans back and straightens up as it scrolls into view.
+  function initPhoneTilt() {
+    const phone = document.querySelector("[data-tilt]");
+    if (!phone || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let queued = false;
+    const update = () => {
+      queued = false;
+      const r = phone.getBoundingClientRect();
+      const h = window.innerHeight;
+      // 0 when the phone's top enters the bottom of the screen, 1 once it has risen to 35% from the top.
+      const p = Math.min(1, Math.max(0, (h - r.top) / (h * 0.65)));
+      phone.style.setProperty("--tilt", (26 * (1 - p)).toFixed(2) + "deg");
+      phone.style.setProperty("--tilt-scale", (0.9 + 0.1 * p).toFixed(3));
+    };
+    const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    update();
+  }
+
   // Every Telegram sign-up button ("Join free on Telegram", "Unlock Pro in Telegram") gets the same look:
   // the animated .btn-tg style (css) and a Telegram plane icon (Tabler "brand-telegram", MIT licence).
   // Pro payment buttons (data-pay) keep their own style.
@@ -293,6 +327,8 @@
     initMobileCta();
     initTelegramLinks();
     initTelegramButtons();
+    initSpotlight();
+    initPhoneTilt();
     initWelcome();
     markActiveNav();
   });

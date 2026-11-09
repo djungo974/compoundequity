@@ -81,6 +81,19 @@
     </div>
   </section>
 
+  <!-- SOURCES: only feeds the collectors really read (see docs/n8n-radar-engine.md, "Sources") -->
+  <div class="source-strip" aria-label="Sources we read every week">
+    <div class="container source-strip-inner">
+      <span class="source-strip-label">We read every week</span>
+      <div class="source-strip-viewport">
+        <div class="source-strip-track">
+          <ul><li>Federal Register</li><li>NRC notices</li><li>DOE notices</li><li>DoD notices</li><li>IAEA press alerts</li><li>World Nuclear News</li><li>Mining Weekly</li><li>Defense One</li><li>Breaking Defense</li></ul>
+          <ul aria-hidden="true"><li>Federal Register</li><li>NRC notices</li><li>DOE notices</li><li>DoD notices</li><li>IAEA press alerts</li><li>World Nuclear News</li><li>Mining Weekly</li><li>Defense One</li><li>Breaking Defense</li></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- WHY SUBSCRIBE -->
   <section class="section section-raised">
     <div class="container">
@@ -93,6 +106,45 @@
         <div class="card" data-reveal data-reveal-delay="2"><h3>Three sectors, one summary</h3><p>Uranium, critical minerals and defense tech move together. One issue connects them in about ten minutes of reading.</p></div>
         <div class="card" data-reveal data-reveal-delay="3"><h3>Every figure sourced</h3><p>Each fact links to its primary source, so you can check anything yourself in one tap.</p></div>
         <div class="card" data-reveal data-reveal-delay="4"><h3>Checked before it's published</h3><p>Every figure must be found in its cited source, and a second reader checks each fact against the sources. Alerts go out only once the editor approves them. No hype, and never a call to buy or sell.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT ARRIVES: the sample issue (real, sourced news from September 2026) as it looks in Telegram -->
+  <section class="section" id="arrives">
+    <div class="container arrives">
+      <div class="arrives-copy" data-reveal>
+        <div class="eyebrow">Every Sunday on Telegram</div>
+        <h2>This is what arrives.</h2>
+        <p>One line per sector, bold headlines, a link to every source, and the author's disclosure. Pro adds the deep dives, the watchlist, next week's calendar and the alerts.</p>
+        <p class="arrives-note">Example built from real, sourced news of September 2026. It was not sent to subscribers.</p>
+        <a href="sample-brief.html" class="btn btn-ghost">See the full sample issue →</a>
+      </div>
+      <div class="tg-stage" aria-label="Example of a weekly issue as it appears in Telegram">
+        <div class="tg-phone" data-tilt>
+          <div class="tg-screen">
+            <div class="tg-head">
+              <span class="tg-avatar" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="11" stroke="#A8C6E8" stroke-width="2"/><path d="M16 16L24 10" stroke="#A8C6E8" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span><b>Metals &amp; Machines</b><small>channel</small></span>
+            </div>
+            <div class="tg-chat">
+              <span class="tg-day">Sunday</span>
+              <div class="tg-bubble">
+                <img src="assets/img/tg-sample.jpg" alt="Gas centrifuges used to enrich uranium" width="640" height="400" loading="lazy">
+                <div class="tg-text">
+                  <p><b>METALS &amp; MACHINES · WEEKLY</b><br><b>Cameco becomes exclusive buyer of Paducah's laser-enriched uranium</b></p>
+                  <p class="tg-rule">──────────────</p>
+                  <p><b>THE WEEK IN 60 SECONDS</b></p>
+                  <p>🟢 <b>Uranium</b> — Cameco becomes the exclusive buyer of Paducah's future laser-enriched uranium, a plant that still needs its NRC license.</p>
+                  <p>🟠 <b>Mining</b> — DOE puts $73M behind four mining-technology test projects: funding, not new production.</p>
+                  <p>🟣 <b>Defense</b> — The Pentagon's in-house AI platform crosses 2 million weekly logins.</p>
+                  <p class="tg-quote"><b>Disclosure</b><br>The watchlist is built from the largest holdings of three reference ETFs…</p>
+                  <span class="tg-time">08:00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
