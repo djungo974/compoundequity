@@ -855,3 +855,9 @@ html { scrollbar-width: thin; scrollbar-color: var(--line-strong) var(--bg); }
   .hero-tilt-copy .hero-cta { margin-top: 24px; }
   .tilt-band { height: 230px; margin-top: 10px; }
 }
+
+/* ---------- Pricing: a Pro alert as it arrives in Telegram (reuses the phone of the home page) ---------- */
+.alert-demo { margin-top: 72px; }
+.alert-demo .tg-text p { margin-bottom: 10px; }
+.tg-link { color: #6AB3F3; }
+@media (max-width: 860px) { .alert-demo { margin-top: 52px; } }
