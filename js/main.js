@@ -273,6 +273,26 @@
     }).observe(band);
   }
 
+  // Home headline: the sector word slides up and out every 2.2 s while the next one springs in from below.
+  function initRotator() {
+    const words = Array.from(document.querySelectorAll(".rot-words .rot-word"));
+    if (words.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let i = 0;
+    setInterval(() => {
+      const cur = words[i];
+      i = (i + 1) % words.length;
+      const next = words[i];
+      // The next word starts below the line without animating there, then springs in.
+      next.classList.add("no-anim");
+      next.classList.remove("is-before");
+      void next.offsetWidth;
+      next.classList.remove("no-anim");
+      cur.classList.remove("is-active");
+      cur.classList.add("is-before");
+      next.classList.add("is-active");
+    }, 2200);
+  }
+
   // How it works: the three steps of the circuit light up one after the other when it comes into view.
   function initCircuit() {
     const circuit = document.querySelector("[data-circuit]");
@@ -449,6 +469,7 @@
     initPhoneTilt();
     initCircuit();
     initTiltBand();
+    initRotator();
     initWelcome();
     markActiveNav();
   });
