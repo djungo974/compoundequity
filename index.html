@@ -52,33 +52,20 @@
 </div>
 
 <main>
-  <!-- HERO -->
-  <section>
-    <div class="hero-carousel" id="heroCarousel">
-      <div class="carousel-track">
-        <div class="carousel-slide photo-uranium is-active"></div>
-        <div class="carousel-slide photo-mining"></div>
-        <div class="carousel-slide photo-defense"></div>
+  <!-- HERO: headline over a curved band of photos that streams right to left (after 21st.dev's Tilted Grid Hero).
+       The photos are listed in data-images; main.js builds the band. All photos are credited in the footer. -->
+  <section class="hero-tilt">
+    <div class="container hero-tilt-copy">
+      <div class="eyebrow" data-reveal>Every Sunday on Telegram</div>
+      <h1 data-reveal data-reveal-delay="1">Mining, uranium, defense. What mattered this week, <em>in 10 minutes.</em></h1>
+      <p class="hero-sub" data-reveal data-reveal-delay="2">We read the filings, contract awards, licensing decisions and policy moves so you don't have to. Every Sunday you read the signals that mattered — explained simply, with their sources. No email, no inbox clutter: it arrives in Telegram.</p>
+      <div class="hero-cta" data-reveal data-reveal-delay="3">
+        <a href="https://t.me/MetalsMachinesBot" data-bot-link class="btn btn-primary" data-magnetic>Join free on Telegram</a>
+        <a href="#plans" class="btn btn-ghost" data-magnetic>Compare free and Pro</a>
       </div>
-      <div class="hero-scrim"></div>
-      <div class="hero-overlay">
-        <div class="container">
-          <div class="eyebrow" data-reveal>Every Sunday on Telegram</div>
-          <h1 data-reveal data-reveal-delay="1">Mining, uranium, defense. What mattered this week, <em>in 10 minutes.</em></h1>
-          <p class="hero-sub" data-reveal data-reveal-delay="2">We read the filings, contract awards, licensing decisions and policy moves so you don't have to. Every Sunday you read the signals that mattered — explained simply, with their sources. No email, no inbox clutter: it arrives in Telegram.</p>
-          <div class="hero-cta" data-reveal data-reveal-delay="3">
-            <a href="https://t.me/MetalsMachinesBot" data-bot-link class="btn btn-primary" data-magnetic>Join free on Telegram</a>
-            <a href="#plans" class="btn btn-ghost" data-magnetic>Compare free and Pro</a>
-          </div>
-          <div class="hero-meta" data-reveal data-reveal-delay="4">
-            <span class="chip"><i style="background:var(--mining)"></i>Mining &amp; critical minerals</span>
-            <span class="chip"><i style="background:var(--uranium)"></i>Uranium &amp; nuclear fuel</span>
-            <span class="chip"><i style="background:var(--defense)"></i>Defense &amp; military AI</span>
-          </div>
-        </div>
-      </div>
-      <div class="scroll-cue" aria-hidden="true"></div>
     </div>
+    <div class="tilt-band" data-tilt-band aria-hidden="true"
+      data-images="assets/img/band/inkai.jpg, assets/img/band/open-pit.jpg, assets/img/band/carriers.jpg, assets/img/band/u-centrifuges.jpg, assets/img/band/m-rare-earths.jpg, assets/img/band/d-f35.jpg, assets/img/band/u-pellet.jpg, assets/img/band/m-mineral-sample.jpg, assets/img/band/d-gps-launch.jpg, assets/img/band/u-fuel-rods.jpg, assets/img/band/m-tailings.jpg, assets/img/band/d-b21.jpg, assets/img/band/d-mq9.jpg"></div>
   </section>
 
   <!-- SOURCES: only feeds the collectors really read (see docs/n8n-radar-engine.md, "Sources") -->
@@ -336,7 +323,7 @@
       <span>Not investment advice.</span>
     </div>
     <p class="footer-legal">Metals &amp; Machines is a publisher of general financial research. It is not a registered investment adviser or broker-dealer and does not give personalized investment advice. Every subscriber receives the same content. The author holds ETFs in the sectors discussed; see the Disclosure policy. Investing involves risk, including the loss of principal.</p>
-    <p class="footer-credits">Photos: Inkai uranium mine, Kazakhstan, by NAC Kazatomprom JSC, <a href="https://commons.wikimedia.org/wiki/File:Inkai_Uranium_Mine_in_Kazakhstan.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>, resized · Open-pit mine, <a href="https://www.pexels.com/photo/38500487/" target="_blank" rel="noopener">Pexels</a> · Carrier strike groups with a B-52 and fighters in formation, Valiant Shield 2007, <a href="https://commons.wikimedia.org/wiki/File:US_Navy_070814-N-6106R-148_USS_Nimitz_(CVN_68),_USS_Kitty_Hawk_(CV_63)_and_USS_John_C._Stennis_(CVN_74)_Carrier_Strike_Groups_transit_in_formation_during_a_joint_photo_exercise_(PHOTOEX)_during_exercise_Valiant_Shield_2007.jpg" target="_blank" rel="noopener">U.S. Navy</a>, public domain, resized. City lights of the United States, <a href="https://commons.wikimedia.org/wiki/File:City_Lights_of_the_United_States_2012.jpg" target="_blank" rel="noopener">NASA Earth Observatory</a>, public domain, resized and darkened · Gas centrifuge cascade, <a href="https://commons.wikimedia.org/wiki/File:Gas_centrifuge_cascade.jpg" target="_blank" rel="noopener">U.S. Department of Energy</a>, public domain, resized and darkened. Use of these photos does not imply endorsement by the U.S. Department of Defense or NASA.</p>
+    <p class="footer-credits">Photos: Inkai uranium mine, Kazakhstan, by NAC Kazatomprom JSC, <a href="https://commons.wikimedia.org/wiki/File:Inkai_Uranium_Mine_in_Kazakhstan.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>, resized · Open-pit mine, <a href="https://www.pexels.com/photo/38500487/" target="_blank" rel="noopener">Pexels</a> · Carrier strike groups with a B-52 and fighters in formation, Valiant Shield 2007, <a href="https://commons.wikimedia.org/wiki/File:US_Navy_070814-N-6106R-148_USS_Nimitz_(CVN_68),_USS_Kitty_Hawk_(CV_63)_and_USS_John_C._Stennis_(CVN_74)_Carrier_Strike_Groups_transit_in_formation_during_a_joint_photo_exercise_(PHOTOEX)_during_exercise_Valiant_Shield_2007.jpg" target="_blank" rel="noopener">U.S. Navy</a>, public domain, resized. City lights of the United States, <a href="https://commons.wikimedia.org/wiki/File:City_Lights_of_the_United_States_2012.jpg" target="_blank" rel="noopener">NASA Earth Observatory</a>, public domain, resized and darkened · Gas centrifuge cascade, <a href="https://commons.wikimedia.org/wiki/File:Gas_centrifuge_cascade.jpg" target="_blank" rel="noopener">U.S. Department of Energy</a>, public domain, resized and darkened. · In the moving band, all public domain and resized: gas centrifuges (<a href="https://commons.wikimedia.org/wiki/File:Gas_centrifuge_cascade.jpg" target="_blank" rel="noopener">U.S. Department of Energy</a>), rare-earth oxides (<a href="https://commons.wikimedia.org/wiki/File:Rareearthoxides.jpg" target="_blank" rel="noopener">U.S. Department of Agriculture</a>), F-35A over the Mojave Desert (<a href="https://commons.wikimedia.org/wiki/File:F-35A_Lightning_II_flies_above_the_Mojave_Desert.jpg" target="_blank" rel="noopener">U.S. Air Force</a>), nuclear fuel pellet (<a href="https://commons.wikimedia.org/wiki/File:Fuel_Pellet.jpg" target="_blank" rel="noopener">U.S. Nuclear Regulatory Commission</a>), USGS mineral specimen (<a href="https://commons.wikimedia.org/wiki/File:Alunite_-_USGS_Mineral_Specimens_015.jpg" target="_blank" rel="noopener">U.S. Geological Survey</a>), GPS III launch (<a href="https://commons.wikimedia.org/wiki/File:GPS_III-SV09_Launches_from_Cape_Canaveral_Space_Force_Station_(9496880).jpg" target="_blank" rel="noopener">U.S. Space Force</a>), nuclear fuel rods (<a href="https://commons.wikimedia.org/wiki/File:Pellet_rod.jpg" target="_blank" rel="noopener">U.S. Nuclear Regulatory Commission</a>), copper-mine tailings (<a href="https://commons.wikimedia.org/wiki/File:EROSION_OF_TAILINGS_PILES_AT_INSPIRATION_CONSOLIDATED_COPPER_CO.%27S_MINE_-_NARA_-_544064.jpg" target="_blank" rel="noopener">U.S. EPA (Documerica)</a>), B-21 Raider (<a href="https://commons.wikimedia.org/wiki/File:B-21_Raider_Refueling.jpg" target="_blank" rel="noopener">U.S. Air Force</a>), MQ-9 Reaper (<a href="https://commons.wikimedia.org/wiki/File:MQ-9_Reaper_UAV_(cropped).jpg" target="_blank" rel="noopener">U.S. Air Force</a>). Use of these photos does not imply endorsement by the U.S. Department of Defense, NASA or any other U.S. government agency.</p>
   </div>
 </footer>
 

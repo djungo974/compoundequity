@@ -83,7 +83,7 @@
 
 /* Photo areas stay dark in both themes (their text sits on a photograph), and so does the home page's nav
    while it floats over the hero photo. */
-.hero-carousel, .sector-banner, .photo-top .nav:not(.is-scrolled) {
+.hero-carousel, .hero-tilt, .sector-banner, .photo-top .nav:not(.is-scrolled) {
   --text: #EEF2F5; --text-soft: #BCB6AE; --text-faint: #8D877F;
   --line: rgba(220, 230, 240, 0.09); --line-strong: rgba(220, 230, 240, 0.17);
   --accent: #7FA9D8; --accent-soft: #A8C6E8; --on-accent: #0B1520; --accent-glow: rgba(127, 169, 216, 0.7);
@@ -825,4 +825,33 @@ html { scrollbar-width: thin; scrollbar-color: var(--line-strong) var(--bg); }
 }
 @media (prefers-reduced-motion: reduce) {
   .brand span, .brand .sweep, .brand .blip { animation: none; }
+}
+
+/* ---------- Hero: headline over a curved band of photos (after 21st.dev's Tilted Grid Hero) ----------
+   One row of photos streams from right to left round the inside of a cylinder: flat in the middle, the ends
+   bending toward the viewer and fading out. main.js cuts each photo into 16 vertical strips, each a flat facet
+   of the cylinder, and moves whole tiles with one rotateY each. Dark in both themes, like the old photo hero. */
+.hero-tilt {
+  position: relative; overflow: hidden; display: flex; flex-direction: column; min-height: 100vh; padding-top: 128px;
+  background: radial-gradient(1100px 560px at 50% 8%, rgba(127, 169, 216, .16), transparent 62%), #0B0F13;
+}
+.hero-tilt::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 90px; pointer-events: none; background: linear-gradient(180deg, transparent, #0F1317); }
+.hero-tilt-copy { position: relative; z-index: 2; text-align: center; }
+.hero-tilt-copy .eyebrow { justify-content: center; }
+.hero-tilt-copy h1 { font-size: clamp(34px, 4.8vw, 64px); max-width: 1000px; margin: 18px auto 0; }
+.hero-tilt-copy h1 em { font-style: italic; color: var(--accent-soft); }
+.hero-tilt-copy .hero-sub { margin: 20px auto 0; max-width: 660px; }
+.hero-tilt-copy .hero-cta { justify-content: center; margin-top: 30px; }
+.tilt-band { position: relative; flex: 1 0 auto; height: clamp(260px, 38vh, 420px); margin-top: 18px; container-type: size; }
+.tilt-stage { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .6s ease; }
+.tilt-tile { position: absolute; transform-style: preserve-3d; }
+.tilt-strip { position: absolute; top: 0; overflow: hidden; background: #1A2128; }
+.tilt-strip.is-first { border-radius: 10px 0 0 10px; }
+.tilt-strip.is-last { border-radius: 0 10px 10px 0; }
+.tilt-strip img { position: absolute; top: 0; max-width: none; object-fit: cover; display: block; }
+@media (max-width: 600px) {
+  .hero-tilt { min-height: 0; padding-top: 104px; }
+  .hero-tilt-copy h1 { margin-top: 14px; }
+  .hero-tilt-copy .hero-cta { margin-top: 24px; }
+  .tilt-band { height: 230px; margin-top: 10px; }
 }

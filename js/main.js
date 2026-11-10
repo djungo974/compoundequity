@@ -169,6 +169,110 @@
     update();
   }
 
+  // Home hero: a curved band of photos streaming right to left (geometry after 21st.dev's Tilted Grid Hero).
+  // The row runs round the inside of a cylinder: the centre faces you flat, the ends bend toward you and fade.
+  // A box can't bend, so each tile is cut into SLICES vertical strips, each turned to its own angle round the
+  // cylinder's axis; one rotateY animation per tile carries it along the arc, its delay setting where it starts.
+  // A tile takes its next photo each time it wraps, out of sight. Visitors who reduce motion get a still band.
+  function initTiltBand() {
+    const band = document.querySelector("[data-tilt-band]");
+    if (!band || !("ResizeObserver" in window)) return;
+    const images = (band.dataset.images || "").split(",").map((s) => s.trim()).filter(Boolean);
+    if (!images.length) return;
+    const SLICES = 16, CAMERA = 1.6, MAX_WIDTH = 55;
+    const cfg = { speed: 4.5, tileHeight: 54, aspect: 16 / 9, gap: 6, axis: 48, curve: 70, fade: 12 };
+    const bend = Math.min(85, Math.max(5, cfg.curve)) * Math.PI / 180;
+    // Cylinder radius, as a share of the band's width, that puts the frame's edge `bend` radians round the arc.
+    const arc = (b) => (CAMERA - 1 + Math.cos(b)) / (2 * CAMERA * Math.sin(b));
+    const deg = (rad) => rad * 180 / Math.PI;
+    const round = (n) => +n.toFixed(4);
+    function measure(width, height) {
+      const h = Math.min(cfg.tileHeight / 100 * height, MAX_WIDTH / 100 * width / cfg.aspect);
+      const radius = width * arc(bend);
+      if (!(h > 0) || !(radius > 0)) return null;
+      const unit = deg(h / radius);
+      const pitch = (cfg.aspect + cfg.gap / 100) * unit;
+      const limit = deg(bend) + cfg.aspect * unit / 2;
+      const columns = Math.min(60, Math.max(2, Math.ceil(2 * limit / pitch)));
+      const sweep = round(columns * pitch / 2);
+      return { columns, sweep, unit: round(unit), limit: round(Math.min(sweep, limit)) };
+    }
+    images.forEach((src) => { const im = new Image(); im.src = src; });
+    const style = document.createElement("style");
+    document.head.appendChild(style);
+    const stage = document.createElement("div");
+    stage.className = "tilt-stage";
+    band.appendChild(stage);
+    const shown = {};
+    let layout = null;
+
+    function render(L) {
+      const { columns, sweep, unit, limit } = L;
+      const u = (n) => "calc(" + round(n) + " * min(" + cfg.tileHeight + "cqh, " + round(MAX_WIDTH / cfg.aspect) + "cqw))";
+      const r = 100 * arc(bend);
+      const radius = round(r) + "cqw";
+      const turn = (d) => "translateZ(" + radius + ") rotateY(" + round(d) + "deg) translateZ(-" + radius + ")";
+      // Past `limit` a tile is wholly off-screen: hidden there, which is also where the loop wraps.
+      const hide = round((sweep - limit) / (2 * sweep || 1) * 100);
+      style.textContent =
+        "@keyframes tilt-orbit{from{transform:" + turn(-sweep) + "}to{transform:" + turn(sweep) + "}" +
+        "0%," + hide + "%," + (100 - hide) + "%,100%{visibility:hidden}" +
+        round(hide + 0.001) + "%," + round(100 - hide - 0.001) + "%{visibility:visible}}" +
+        "@media (prefers-reduced-motion: reduce){.tilt-tile{animation-play-state:paused}}";
+      const share = cfg.aspect / SLICES;
+      const duration = columns * cfg.speed;
+      const mask = "linear-gradient(90deg,transparent,#000 " + cfg.fade + "%,#000 " + (100 - cfg.fade) + "%,transparent)";
+      stage.style.perspective = round(r * CAMERA) + "cqw";
+      stage.style.perspectiveOrigin = "50% " + cfg.axis + "%";
+      stage.style.maskImage = mask;
+      stage.style.webkitMaskImage = mask;
+      stage.textContent = "";
+      for (let t = 0; t < columns; t++) {
+        // Tile columns-1 starts nearest the exit, tile 0 furthest back: `first` numbers them in order of arrival.
+        const first = columns - 1 - t;
+        const src = images[(shown[t] !== undefined ? shown[t] : first) % images.length];
+        const tile = document.createElement("div");
+        tile.className = "tilt-tile";
+        tile.style.cssText = "left:calc(50% - " + u(cfg.aspect / 2) + ");top:calc(" + cfg.axis + "% - " + u(0.5) + ");width:" + u(cfg.aspect) +
+          ";height:" + u(1) + ";animation:tilt-orbit " + duration + "s linear " + (-t * cfg.speed) + "s infinite";
+        for (let k = 0; k < SLICES; k++) {
+          const strip = document.createElement("div");
+          strip.className = "tilt-strip" + (k === 0 ? " is-first" : "") + (k === SLICES - 1 ? " is-last" : "");
+          // Every strip starts at the tile's centre and is turned round the axis to its own place on the arc;
+          // each is a pixel wider than its share so neighbours overlap and no hairline opens between them.
+          strip.style.cssText = "left:" + u((cfg.aspect - share) / 2) + ";width:" + (k === SLICES - 1 ? u(share) : "calc(" + u(share) + " + 1px)") +
+            ";height:" + u(1) + ";transform:" + turn((cfg.aspect / 2 - (k + 0.5) * share) * unit);
+          const img = document.createElement("img");
+          img.src = src;
+          img.alt = "";
+          img.draggable = false;
+          img.decoding = "async";
+          img.style.cssText = "left:" + u(-k * share) + ";width:" + u(cfg.aspect) + ";height:" + u(1);
+          strip.appendChild(img);
+          tile.appendChild(strip);
+        }
+        tile.addEventListener("animationiteration", (e) => {
+          // elapsedTime counts whole loops, missed events included.
+          const next = Math.round(e.elapsedTime / duration) * columns + first;
+          if (shown[t] === next) return;
+          shown[t] = next;
+          const nextSrc = images[next % images.length];
+          tile.querySelectorAll("img").forEach((im) => { im.src = nextSrc; });
+        });
+        stage.appendChild(tile);
+      }
+      stage.style.opacity = "1";
+    }
+
+    new ResizeObserver(([entry]) => {
+      const next = measure(entry.contentRect.width, entry.contentRect.height);
+      if (!next) return;
+      if (layout && layout.columns === next.columns && layout.sweep === next.sweep && layout.unit === next.unit) return;
+      layout = next;
+      render(layout);
+    }).observe(band);
+  }
+
   // How it works: the three steps of the circuit light up one after the other when it comes into view.
   function initCircuit() {
     const circuit = document.querySelector("[data-circuit]");
@@ -344,6 +448,7 @@
     initSpotlight();
     initPhoneTilt();
     initCircuit();
+    initTiltBand();
     initWelcome();
     markActiveNav();
   });
