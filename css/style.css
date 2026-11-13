@@ -81,9 +81,9 @@
   }
 }
 
-/* Photo areas stay dark in both themes (their text sits on a photograph), and so does the home page's nav
-   while it floats over the hero photo. */
-.hero-carousel, .sector-banner {
+/* Photo areas stay dark in both themes (their text sits on a photograph or on the film), and so does the home
+   page's nav for as long as the film is under it (main.js sets body.film-on). */
+.hero-carousel, .sector-banner, .hero-film, .film-on .nav {
   --text: #EEF2F5; --text-soft: #BCB6AE; --text-faint: #8D877F;
   --line: rgba(220, 230, 240, 0.09); --line-strong: rgba(220, 230, 240, 0.17);
   --accent: #7FA9D8; --accent-soft: #A8C6E8; --on-accent: #0B1520; --accent-glow: rgba(127, 169, 216, 0.7);
@@ -112,7 +112,10 @@ html, body {
   margin: 0; padding: 0;
   background: var(--bg); color: var(--text);
   font-family: var(--font-body); -webkit-font-smoothing: antialiased;
+  /* "clip" rather than "hidden" where the browser knows it: "hidden" turns body into a scrolling box, and nothing
+     inside it can stick to the screen any more (the home page's film needs position: sticky). */
   overflow-x: hidden;
+  overflow-x: clip;
 }
 body { position: relative; }
 body::before {
@@ -154,6 +157,7 @@ button { font-family: var(--font-body); cursor: pointer; }
   border-bottom: 1px solid transparent;
   transition: padding .4s var(--ease), background-color .4s var(--ease), border-color .4s var(--ease);
 }
+.film-on .nav { --nav-bg: rgba(10, 13, 16, 0.74); }
 .nav.is-scrolled {
   padding: 14px 0; background: var(--nav-bg);
   backdrop-filter: blur(14px) saturate(140%); border-bottom-color: var(--line);
@@ -827,31 +831,68 @@ html { scrollbar-width: thin; scrollbar-color: var(--line-strong) var(--bg); }
   .brand span, .brand .sweep, .brand .blip { animation: none; }
 }
 
-/* ---------- Hero: headline over a curved band of photos (after 21st.dev's Tilted Grid Hero) ----------
-   One row of photos streams from right to left round the inside of a cylinder: flat in the middle, the ends
-   bending toward the viewer and fading out. main.js cuts each photo into 16 vertical strips, each a flat facet
-   of the cylinder, and moves whole tiles with one rotateY each. Follows the light/dark theme (founder, 2026-11-10):
-   only its photos stay as they are. */
-.hero-tilt {
-  position: relative; overflow: hidden; display: flex; flex-direction: column; min-height: 100vh; padding-top: 128px;
-  background: radial-gradient(1100px 560px at 50% 8%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 62%), var(--bg);
-  color: var(--text);
+/* ---------- Hero: a film that plays as you scroll (founder, 2026-11-11, after a "video to website" demo) ----------
+   Three public-domain clips cut into frames (assets/film/<act>/f001.webp …). main.js adds .is-film on desktop: the
+   section becomes 430vh tall, its inside sticks to the screen, and the scroll position picks the frame drawn on the
+   canvas, forward and backward. Without .is-film (phones, reduced motion, data saver, no JavaScript) it is an
+   ordinary full-screen hero over three stills that fade into each other.
+   The film is footage, mostly dark: it keeps the dark palette in both themes, and so does the nav above it
+   (body.film-on). Everything below still follows the theme. */
+.hero-film { position: relative; background: #0A0D10; }
+.film-sticky { position: relative; min-height: 100vh; min-height: 100svh; overflow: hidden; display: flex; align-items: center; }
+.hero-film.is-film { height: 430vh; }
+.hero-film.is-film .film-sticky { position: sticky; top: 0; height: 100vh; min-height: 0; }
+.film-stills, .film-shade { position: absolute; inset: 0; }
+.film-still { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.6s ease; }
+.film-still.is-on { opacity: 1; }
+.film-still--metals { object-position: 48% 50%; }
+.film-still--energy { object-position: 42% 50%; }
+.film-still--machines { object-position: 62% 60%; }
+.film-canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .6s ease; }
+.hero-film.is-playing .film-canvas { opacity: 1; }
+/* Darker at the top (nav) and bottom (bar), lighter in the middle so the footage reads. */
+.film-shade { pointer-events: none; background: linear-gradient(180deg, rgba(8,11,14,.78) 0%, rgba(8,11,14,.46) 30%, rgba(8,11,14,.5) 64%, rgba(8,11,14,.9) 100%); }
+
+.film-copy { position: relative; z-index: 2; text-align: center; padding-top: 110px; padding-bottom: 90px; transition: opacity .4s ease, transform .6s var(--ease); }
+.film-copy .eyebrow { justify-content: center; }
+.film-copy h1 { font-size: clamp(34px, 4.6vw, 62px); max-width: 1000px; margin: 18px auto 0; line-height: 1.06; text-shadow: 0 2px 24px rgba(0,0,0,.55); }
+.film-copy h1 em { font-style: italic; color: var(--text); }
+.film-copy .hero-sub { margin: 20px auto 0; max-width: 660px; color: var(--text); text-shadow: 0 1px 14px rgba(0,0,0,.6); }
+.film-copy .hero-cta { justify-content: center; margin-top: 30px; }
+.film-copy.is-off { opacity: 0; transform: translateY(-26px); pointer-events: none; }
+.film-hint { display: none; margin-top: 34px; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--text-soft); }
+.hero-film.is-film .film-hint { display: block; }
+.film-hint::after { content: ""; display: block; width: 1px; height: 34px; margin: 10px auto 0; background: linear-gradient(180deg, var(--accent-soft), transparent); animation: film-hint 1.8s ease-in-out infinite; transform-origin: top; }
+@keyframes film-hint { 0%, 100% { transform: scaleY(.35); opacity: .5; } 50% { transform: scaleY(1); opacity: 1; } }
+
+/* One caption per act. Left, right, left: never twice from the same side. */
+.film-beat { display: none; }
+.hero-film.is-film .film-beat { display: block; position: absolute; z-index: 2; left: 0; right: 0; bottom: 21vh; pointer-events: none; }
+.film-beat-inner { max-width: 500px; opacity: 0; transform: translateX(-46px); transition: opacity .5s ease, transform .7s var(--ease); }
+.film-beat--right .film-beat-inner { margin-left: auto; transform: translateX(46px); }
+.film-beat.is-on .film-beat-inner { opacity: 1; transform: none; }
+.film-kicker { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--accent-soft); }
+.film-beat h2 { margin-top: 12px; font-size: clamp(30px, 3.6vw, 50px); line-height: 1.05; text-shadow: 0 2px 22px rgba(0,0,0,.6); }
+.film-beat p { margin-top: 14px; font-size: 18px; color: var(--text); text-shadow: 0 1px 14px rgba(0,0,0,.7); }
+.film-beat small { display: block; margin-top: 16px; font-size: 12px; color: var(--text-soft); text-shadow: 0 1px 10px rgba(0,0,0,.8); }
+
+/* Bottom bar while the film runs: which act you are in, the Telegram button, and a way out. */
+.film-bar { display: none; }
+.hero-film.is-film .film-bar {
+  display: flex; position: absolute; z-index: 3; left: 0; right: 0; bottom: 26px; padding: 0 24px;
+  align-items: center; justify-content: center; gap: 22px; flex-wrap: wrap;
+  opacity: 0; transform: translateY(14px); pointer-events: none; transition: opacity .4s ease, transform .5s var(--ease);
 }
-.hero-tilt::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 90px; pointer-events: none; background: linear-gradient(180deg, transparent, var(--bg)); }
-.hero-tilt-copy { position: relative; z-index: 2; text-align: center; }
-.hero-tilt-copy .eyebrow { justify-content: center; }
-.hero-tilt-copy h1 { font-size: clamp(34px, 4.6vw, 62px); max-width: 1000px; margin: 18px auto 0; line-height: 1.06; }
-.hero-tilt-copy h1 em { font-style: italic; color: var(--text); }
-.hero-tilt-copy .hero-sub { margin: 20px auto 0; max-width: 660px; color: var(--text); }
-.hero-tilt-copy h1, .hero-tilt-copy .hero-sub, .hero-tilt-copy .eyebrow { text-shadow: none; }
-.hero-tilt-copy .hero-cta { justify-content: center; margin-top: 30px; }
-.tilt-band { position: relative; flex: 1 0 auto; height: clamp(260px, 38vh, 420px); margin-top: 18px; container-type: size; }
-.tilt-stage { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .6s ease; }
-.tilt-tile { position: absolute; transform-style: preserve-3d; }
-.tilt-strip { position: absolute; top: 0; overflow: hidden; background: var(--surface-2); }
-.tilt-strip.is-first { border-radius: 10px 0 0 10px; }
-.tilt-strip.is-last { border-radius: 0 10px 10px 0; }
-.tilt-strip img { position: absolute; top: 0; max-width: none; object-fit: cover; display: block; }
+.hero-film.is-film .film-bar.is-on { opacity: 1; transform: none; pointer-events: auto; }
+.film-steps { display: flex; gap: 18px; margin: 0; padding: 0; list-style: none; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint); }
+.film-steps li { position: relative; padding-top: 9px; transition: color .3s ease; }
+.film-steps li::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; border-radius: 2px; background: var(--line-strong); transition: background-color .3s ease; }
+.film-steps li.is-on { color: var(--text); }
+.film-steps li.is-on::before { background: var(--accent); }
+.film-bar-cta { padding: 10px 18px; font-size: 14px; }
+.film-skip { font-size: 13px; color: var(--text-soft); border-bottom: 1px solid var(--line-strong); padding-bottom: 2px; }
+.film-skip:hover { color: var(--text); border-color: var(--accent); }
+#after-film { display: block; scroll-margin-top: 70px; }
 
 /* The headline's rotating sector (after 21st.dev's Animated Hero): every 2.2 s the word slides up and out while
    the next one springs in from below (main.js). Its own line, so nothing around it moves; screen readers get the
@@ -866,13 +907,12 @@ html { scrollbar-width: thin; scrollbar-color: var(--line-strong) var(--bg); }
 .rot-word.is-before { opacity: 0; transform: translateY(-105%); }
 .rot-word.no-anim { transition: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-@media (prefers-reduced-motion: reduce) { .rot-word { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .rot-word, .film-still { transition: none; } .film-hint::after { animation: none; } }
 
 @media (max-width: 600px) {
-  .hero-tilt { min-height: 0; padding-top: 104px; }
-  .hero-tilt-copy h1 { margin-top: 14px; }
-  .hero-tilt-copy .hero-cta { margin-top: 24px; }
-  .tilt-band { height: 230px; margin-top: 10px; }
+  .film-copy { padding-top: 104px; padding-bottom: 64px; }
+  .film-copy h1 { margin-top: 14px; }
+  .film-copy .hero-cta { margin-top: 24px; }
 }
 
 /* ---------- Pricing: a Pro alert as it arrives in Telegram (reuses the phone of the home page) ---------- */

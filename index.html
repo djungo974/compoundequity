@@ -52,26 +52,70 @@
 </div>
 
 <main>
-  <!-- HERO: headline over a curved band of photos that streams right to left (after 21st.dev's Tilted Grid Hero).
-       The photos are listed in data-images; main.js builds the band. All photos are credited in the footer. -->
-  <section class="hero-tilt">
-    <div class="container hero-tilt-copy">
-      <div class="eyebrow" data-reveal>Every Sunday on Telegram</div>
-      <h1 data-reveal data-reveal-delay="1">
-        <span>What mattered this week in</span>
-        <span class="sr-only">uranium, critical minerals, defense and military AI,</span>
-        <span class="rot-words" aria-hidden="true"><span class="rot-word is-active">uranium,</span><span class="rot-word">critical minerals,</span><span class="rot-word">defense,</span><span class="rot-word">military AI,</span></span>
-        <em>explained in 10 minutes.</em>
-      </h1>
-      <p class="hero-sub" data-reveal data-reveal-delay="2">We read the filings, contract awards, licensing decisions and policy moves so you don't have to. Every Sunday you read the signals that mattered — explained simply, with their sources. No email, no inbox clutter: it arrives in Telegram.</p>
-      <div class="hero-cta" data-reveal data-reveal-delay="3">
-        <a href="https://t.me/MetalsMachinesBot" data-bot-link class="btn btn-primary" data-magnetic>Join free on Telegram</a>
-        <a href="#plans" class="btn btn-ghost" data-magnetic>Compare free and Pro</a>
+  <!-- HERO: a film that plays as you scroll. Three public-domain clips, each cut into frames that main.js draws on
+       a canvas (tools/extract-frames.mjs makes them): steel forged for the U.S. Army, the United States at night
+       from the space station, an uncrewed XQ-58A flying with an F-22 and an F-35. Metals, energy, machines.
+       Phones, reduced motion and data saver get the three stills instead. The footage illustrates the sectors, it is
+       never presented as the week's news; it is credited in the footer. -->
+  <section class="hero-film" data-film data-film-acts="metals:64, energy:50, machines:40">
+    <div class="film-sticky">
+      <div class="film-stills" aria-hidden="true">
+        <img class="film-still film-still--metals is-on" src="assets/film/metals.webp" alt="" width="1280" height="720" fetchpriority="high">
+        <img class="film-still film-still--energy" data-src="assets/film/energy.webp" alt="" width="1280" height="720">
+        <img class="film-still film-still--machines" data-src="assets/film/machines.webp" alt="" width="1280" height="720">
+      </div>
+      <canvas class="film-canvas" aria-hidden="true"></canvas>
+      <div class="film-shade" aria-hidden="true"></div>
+
+      <div class="container film-copy" data-film-intro>
+        <div class="eyebrow" data-reveal>Every Sunday on Telegram</div>
+        <h1 data-reveal data-reveal-delay="1">
+          <span>What mattered this week in</span>
+          <span class="sr-only">uranium, critical minerals, defense and military AI,</span>
+          <span class="rot-words" aria-hidden="true"><span class="rot-word is-active">uranium,</span><span class="rot-word">critical minerals,</span><span class="rot-word">defense,</span><span class="rot-word">military AI,</span></span>
+          <em>explained in 10 minutes.</em>
+        </h1>
+        <p class="hero-sub" data-reveal data-reveal-delay="2">We read the filings, contract awards, licensing decisions and policy moves so you don't have to. Every Sunday you read the signals that mattered — explained simply, with their sources. No email, no inbox clutter: it arrives in Telegram.</p>
+        <div class="hero-cta" data-reveal data-reveal-delay="3">
+          <a href="https://t.me/MetalsMachinesBot" data-bot-link class="btn btn-primary" data-magnetic>Join free on Telegram</a>
+          <a href="#plans" class="btn btn-ghost" data-magnetic>Compare free and Pro</a>
+        </div>
+        <div class="film-hint" aria-hidden="true">Scroll to play the film</div>
+      </div>
+
+      <div class="container film-beat" data-film-beat>
+        <div class="film-beat-inner">
+          <span class="film-kicker">01 · Metals</span>
+          <h2>Mining and critical minerals</h2>
+          <p>Copper, lithium, rare earths: the permits, supply deals and export controls that decide who gets the metal.</p>
+          <small>File footage: steel forged at Scranton Army Ammunition Plant, U.S. Army</small>
+        </div>
+      </div>
+      <div class="container film-beat film-beat--right" data-film-beat>
+        <div class="film-beat-inner">
+          <span class="film-kicker">02 · Energy</span>
+          <h2>Uranium and nuclear fuel</h2>
+          <p>Enrichment, reactor licensing and fuel contracts, read at the source: NRC, DOE and IAEA notices.</p>
+          <small>File footage: the eastern United States at night, from the International Space Station, NASA</small>
+        </div>
+      </div>
+      <div class="container film-beat" data-film-beat>
+        <div class="film-beat-inner">
+          <span class="film-kicker">03 · Machines</span>
+          <h2>Defense and military AI</h2>
+          <p>Contract awards, budgets and autonomy programs, from the Federal Register and the defense press.</p>
+          <small>File footage: an uncrewed XQ-58A flying with an F-22 and an F-35, U.S. Air Force</small>
+        </div>
+      </div>
+
+      <div class="film-bar">
+        <ol class="film-steps" aria-hidden="true"><li>Metals</li><li>Energy</li><li>Machines</li></ol>
+        <a href="https://t.me/MetalsMachinesBot" data-bot-link class="btn btn-primary film-bar-cta">Join free on Telegram</a>
+        <a href="#after-film" class="film-skip">Skip the film ↓</a>
       </div>
     </div>
-    <div class="tilt-band" data-tilt-band aria-hidden="true"
-      data-images="assets/img/band/inkai.jpg, assets/img/band/open-pit.jpg, assets/img/band/carriers.jpg, assets/img/band/u-centrifuges.jpg, assets/img/band/m-rare-earths.jpg, assets/img/band/d-f35.jpg, assets/img/band/u-pellet.jpg, assets/img/band/m-mineral-sample.jpg, assets/img/band/d-gps-launch.jpg, assets/img/band/u-fuel-rods.jpg, assets/img/band/m-tailings.jpg, assets/img/band/d-b21.jpg, assets/img/band/d-mq9.jpg"></div>
   </section>
+  <span id="after-film"></span>
 
   <!-- SOURCES: only feeds the collectors really read (see docs/n8n-radar-engine.md, "Sources") -->
   <div class="source-strip" aria-label="Sources we read every week">
@@ -330,7 +374,7 @@
       <span>Not investment advice.</span>
     </div>
     <p class="footer-legal">Metals &amp; Machines is a publisher of general financial research. It is not a registered investment adviser or broker-dealer and does not give personalized investment advice. Every subscriber receives the same content. The author holds ETFs in the sectors discussed; see the Disclosure policy. Investing involves risk, including the loss of principal.</p>
-    <p class="footer-credits">Photos: Inkai uranium mine, Kazakhstan, by NAC Kazatomprom JSC, <a href="https://commons.wikimedia.org/wiki/File:Inkai_Uranium_Mine_in_Kazakhstan.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>, resized · Open-pit mine, <a href="https://www.pexels.com/photo/38500487/" target="_blank" rel="noopener">Pexels</a> · Carrier strike groups with a B-52 and fighters in formation, Valiant Shield 2007, <a href="https://commons.wikimedia.org/wiki/File:US_Navy_070814-N-6106R-148_USS_Nimitz_(CVN_68),_USS_Kitty_Hawk_(CV_63)_and_USS_John_C._Stennis_(CVN_74)_Carrier_Strike_Groups_transit_in_formation_during_a_joint_photo_exercise_(PHOTOEX)_during_exercise_Valiant_Shield_2007.jpg" target="_blank" rel="noopener">U.S. Navy</a>, public domain, resized. City lights of the United States, <a href="https://commons.wikimedia.org/wiki/File:City_Lights_of_the_United_States_2012.jpg" target="_blank" rel="noopener">NASA Earth Observatory</a>, public domain, resized and darkened · Gas centrifuge cascade, <a href="https://commons.wikimedia.org/wiki/File:Gas_centrifuge_cascade.jpg" target="_blank" rel="noopener">U.S. Department of Energy</a>, public domain, resized and darkened. · In the moving band, all public domain and resized: gas centrifuges (<a href="https://commons.wikimedia.org/wiki/File:Gas_centrifuge_cascade.jpg" target="_blank" rel="noopener">U.S. Department of Energy</a>), rare-earth oxides (<a href="https://commons.wikimedia.org/wiki/File:Rareearthoxides.jpg" target="_blank" rel="noopener">U.S. Department of Agriculture</a>), F-35A over the Mojave Desert (<a href="https://commons.wikimedia.org/wiki/File:F-35A_Lightning_II_flies_above_the_Mojave_Desert.jpg" target="_blank" rel="noopener">U.S. Air Force</a>), nuclear fuel pellet (<a href="https://commons.wikimedia.org/wiki/File:Fuel_Pellet.jpg" target="_blank" rel="noopener">U.S. Nuclear Regulatory Commission</a>), USGS mineral specimen (<a href="https://commons.wikimedia.org/wiki/File:Alunite_-_USGS_Mineral_Specimens_015.jpg" target="_blank" rel="noopener">U.S. Geological Survey</a>), GPS III launch (<a href="https://commons.wikimedia.org/wiki/File:GPS_III-SV09_Launches_from_Cape_Canaveral_Space_Force_Station_(9496880).jpg" target="_blank" rel="noopener">U.S. Space Force</a>), nuclear fuel rods (<a href="https://commons.wikimedia.org/wiki/File:Pellet_rod.jpg" target="_blank" rel="noopener">U.S. Nuclear Regulatory Commission</a>), copper-mine tailings (<a href="https://commons.wikimedia.org/wiki/File:EROSION_OF_TAILINGS_PILES_AT_INSPIRATION_CONSOLIDATED_COPPER_CO.%27S_MINE_-_NARA_-_544064.jpg" target="_blank" rel="noopener">U.S. EPA (Documerica)</a>), B-21 Raider (<a href="https://commons.wikimedia.org/wiki/File:B-21_Raider_Refueling.jpg" target="_blank" rel="noopener">U.S. Air Force</a>), MQ-9 Reaper (<a href="https://commons.wikimedia.org/wiki/File:MQ-9_Reaper_UAV_(cropped).jpg" target="_blank" rel="noopener">U.S. Air Force</a>). Use of these photos does not imply endorsement by the U.S. Department of Defense, NASA or any other U.S. government agency.</p>
+    <p class="footer-credits">Film at the top of the page, public domain, cropped and resized: steel forged at Scranton Army Ammunition Plant, <a href="https://www.dvidshub.net/video/928362/press-process-scranton-army-ammunition-plant" target="_blank" rel="noopener">U.S. Army video by Dori Whipple</a> · the eastern United States at night from the International Space Station, <a href="https://eol.jsc.nasa.gov/Videos/CrewEarthObservationsVideos/NorthAmerica.htm#eastUS_iss_20150111" target="_blank" rel="noopener">ISS Crew Earth Observations Facility and the Earth Science and Remote Sensing Unit, NASA Johnson Space Center</a> · an uncrewed XQ-58A Valkyrie flying with an F-22 and an F-35, <a href="https://www.dvidshub.net/video/914717/xq-58a-test-flight-b-roll" target="_blank" rel="noopener">U.S. Air Force video by the 3rd Audiovisual Squadron</a>. Photos: city lights of the United States, <a href="https://commons.wikimedia.org/wiki/File:City_Lights_of_the_United_States_2012.jpg" target="_blank" rel="noopener">NASA Earth Observatory</a>, public domain, resized and darkened · gas centrifuge cascade, <a href="https://commons.wikimedia.org/wiki/File:Gas_centrifuge_cascade.jpg" target="_blank" rel="noopener">U.S. Department of Energy</a>, public domain, resized and darkened. The appearance of U.S. Department of Defense visual information does not imply or constitute DoD endorsement; use of these images does not imply endorsement by NASA or any other U.S. government agency.</p>
   </div>
 </footer>
 

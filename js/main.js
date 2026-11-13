@@ -169,108 +169,150 @@
     update();
   }
 
-  // Home hero: a curved band of photos streaming right to left (geometry after 21st.dev's Tilted Grid Hero).
-  // The row runs round the inside of a cylinder: the centre faces you flat, the ends bend toward you and fade.
-  // A box can't bend, so each tile is cut into SLICES vertical strips, each turned to its own angle round the
-  // cylinder's axis; one rotateY animation per tile carries it along the arc, its delay setting where it starts.
-  // A tile takes its next photo each time it wraps, out of sight. Visitors who reduce motion get a still band.
-  function initTiltBand() {
-    const band = document.querySelector("[data-tilt-band]");
-    if (!band || !("ResizeObserver" in window)) return;
-    const images = (band.dataset.images || "").split(",").map((s) => s.trim()).filter(Boolean);
-    if (!images.length) return;
-    const SLICES = 16, CAMERA = 1.6, MAX_WIDTH = 55;
-    const cfg = { speed: 4.5, tileHeight: 54, aspect: 16 / 9, gap: 6, axis: 48, curve: 70, fade: 12 };
-    const bend = Math.min(85, Math.max(5, cfg.curve)) * Math.PI / 180;
-    // Cylinder radius, as a share of the band's width, that puts the frame's edge `bend` radians round the arc.
-    const arc = (b) => (CAMERA - 1 + Math.cos(b)) / (2 * CAMERA * Math.sin(b));
-    const deg = (rad) => rad * 180 / Math.PI;
-    const round = (n) => +n.toFixed(4);
-    function measure(width, height) {
-      const h = Math.min(cfg.tileHeight / 100 * height, MAX_WIDTH / 100 * width / cfg.aspect);
-      const radius = width * arc(bend);
-      if (!(h > 0) || !(radius > 0)) return null;
-      const unit = deg(h / radius);
-      const pitch = (cfg.aspect + cfg.gap / 100) * unit;
-      const limit = deg(bend) + cfg.aspect * unit / 2;
-      const columns = Math.min(60, Math.max(2, Math.ceil(2 * limit / pitch)));
-      const sweep = round(columns * pitch / 2);
-      return { columns, sweep, unit: round(unit), limit: round(Math.min(sweep, limit)) };
-    }
-    images.forEach((src) => { const im = new Image(); im.src = src; });
-    const style = document.createElement("style");
-    document.head.appendChild(style);
-    const stage = document.createElement("div");
-    stage.className = "tilt-stage";
-    band.appendChild(stage);
-    const shown = {};
-    let layout = null;
+  // Home hero: a film that plays as you scroll. Each act is a public-domain clip cut into frames
+  // (tools/extract-frames.mjs writes assets/film/<act>/f001.webp …). The section is 430vh tall and its inside sticks
+  // to the screen: how far you are through it picks the frame drawn on the canvas, so scrolling down plays the film
+  // and scrolling up rewinds it. An act opens through a ring growing from the centre, like a radar ping.
+  // Phones, reduced motion and data saver never load the frames: they get three stills fading into each other.
+  function initHeroFilm() {
+    const film = document.querySelector("[data-film]");
+    if (!film) return;
+    const stills = Array.from(film.querySelectorAll(".film-still"));
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const conn = navigator.connection || {};
+    const canvas = film.querySelector(".film-canvas");
+    const ctx = canvas && canvas.getContext ? canvas.getContext("2d") : null;
+    const acts = (film.dataset.filmActs || "").split(",")
+      .map((s) => { const [name, count] = s.trim().split(":"); return { name, count: Number(count), frames: [], asked: false, loaded: 0 }; })
+      .filter((a) => a.name && a.count > 0);
 
-    function render(L) {
-      const { columns, sweep, unit, limit } = L;
-      const u = (n) => "calc(" + round(n) + " * min(" + cfg.tileHeight + "cqh, " + round(MAX_WIDTH / cfg.aspect) + "cqw))";
-      const r = 100 * arc(bend);
-      const radius = round(r) + "cqw";
-      const turn = (d) => "translateZ(" + radius + ") rotateY(" + round(d) + "deg) translateZ(-" + radius + ")";
-      // Past `limit` a tile is wholly off-screen: hidden there, which is also where the loop wraps.
-      const hide = round((sweep - limit) / (2 * sweep || 1) * 100);
-      style.textContent =
-        "@keyframes tilt-orbit{from{transform:" + turn(-sweep) + "}to{transform:" + turn(sweep) + "}" +
-        "0%," + hide + "%," + (100 - hide) + "%,100%{visibility:hidden}" +
-        round(hide + 0.001) + "%," + round(100 - hide - 0.001) + "%{visibility:visible}}" +
-        "@media (prefers-reduced-motion: reduce){.tilt-tile{animation-play-state:paused}}";
-      const share = cfg.aspect / SLICES;
-      const duration = columns * cfg.speed;
-      const mask = "linear-gradient(90deg,transparent,#000 " + cfg.fade + "%,#000 " + (100 - cfg.fade) + "%,transparent)";
-      stage.style.perspective = round(r * CAMERA) + "cqw";
-      stage.style.perspectiveOrigin = "50% " + cfg.axis + "%";
-      stage.style.maskImage = mask;
-      stage.style.webkitMaskImage = mask;
-      stage.textContent = "";
-      for (let t = 0; t < columns; t++) {
-        // Tile columns-1 starts nearest the exit, tile 0 furthest back: `first` numbers them in order of arrival.
-        const first = columns - 1 - t;
-        const src = images[(shown[t] !== undefined ? shown[t] : first) % images.length];
-        const tile = document.createElement("div");
-        tile.className = "tilt-tile";
-        tile.style.cssText = "left:calc(50% - " + u(cfg.aspect / 2) + ");top:calc(" + cfg.axis + "% - " + u(0.5) + ");width:" + u(cfg.aspect) +
-          ";height:" + u(1) + ";animation:tilt-orbit " + duration + "s linear " + (-t * cfg.speed) + "s infinite";
-        for (let k = 0; k < SLICES; k++) {
-          const strip = document.createElement("div");
-          strip.className = "tilt-strip" + (k === 0 ? " is-first" : "") + (k === SLICES - 1 ? " is-last" : "");
-          // Every strip starts at the tile's centre and is turned round the axis to its own place on the arc;
-          // each is a pixel wider than its share so neighbours overlap and no hairline opens between them.
-          strip.style.cssText = "left:" + u((cfg.aspect - share) / 2) + ";width:" + (k === SLICES - 1 ? u(share) : "calc(" + u(share) + " + 1px)") +
-            ";height:" + u(1) + ";transform:" + turn((cfg.aspect / 2 - (k + 0.5) * share) * unit);
-          const img = document.createElement("img");
-          img.src = src;
-          img.alt = "";
-          img.draggable = false;
-          img.decoding = "async";
-          img.style.cssText = "left:" + u(-k * share) + ";width:" + u(cfg.aspect) + ";height:" + u(1);
-          strip.appendChild(img);
-          tile.appendChild(strip);
-        }
-        tile.addEventListener("animationiteration", (e) => {
-          // elapsedTime counts whole loops, missed events included.
-          const next = Math.round(e.elapsedTime / duration) * columns + first;
-          if (shown[t] === next) return;
-          shown[t] = next;
-          const nextSrc = images[next % images.length];
-          tile.querySelectorAll("img").forEach((im) => { im.src = nextSrc; });
-        });
-        stage.appendChild(tile);
+    // The nav keeps the film's dark palette for as long as the film is under it.
+    const underNav = () => document.body.classList.toggle("film-on", film.getBoundingClientRect().bottom > 90);
+    underNav();
+
+    // "3g" is not excluded: desktop browsers report it on good connections too (it is an estimate).
+    // Browsers without "overflow: clip" keep body as a scrolling box (style.css), where the film could not stick.
+    const sticks = window.CSS && CSS.supports && CSS.supports("overflow-x", "clip");
+    if (!ctx || !acts.length || !sticks || reduced || conn.saveData || /2g$/.test(conn.effectiveType || "") || window.matchMedia("(max-width: 860px)").matches) {
+      window.addEventListener("scroll", underNav, { passive: true });
+      if (reduced || stills.length < 2) return;
+      stills.forEach((img) => { if (img.dataset.src) img.src = img.dataset.src; });
+      let shown = 0;
+      setInterval(() => {
+        stills[shown].classList.remove("is-on");
+        shown = (shown + 1) % stills.length;
+        stills[shown].classList.add("is-on");
+      }, 5200);
+      return;
+    }
+
+    const intro = film.querySelector("[data-film-intro]");
+    const beats = Array.from(film.querySelectorAll("[data-film-beat]"));
+    const bar = film.querySelector(".film-bar");
+    const steps = Array.from(film.querySelectorAll(".film-steps li"));
+    const INTRO_END = 0.07;   // the headline leaves once the film has clearly started
+    const WIPE = 0.045;       // share of the scroll an act takes to open through the ring
+    const share = 1 / acts.length;
+    acts.forEach((a, i) => { a.from = i * share; a.to = (i + 1) * share; });
+    film.classList.add("is-film");
+
+    const pad = (n) => String(n).padStart(3, "0");
+    let wanted = "";          // what the last draw was asked to show, to skip identical redraws
+    let playing = false;
+    let queued = false;
+    function schedule() { if (!queued) { queued = true; requestAnimationFrame(draw); } }
+    function load(i) {
+      const act = acts[i];
+      if (!act || act.asked) return;
+      act.asked = true;
+      for (let k = 0; k < act.count; k++) {
+        const img = new Image();
+        img.decoding = "async";
+        img.onload = () => {
+          act.frames[k] = img;
+          act.loaded++;
+          if (act.loaded === act.count) load(i + 1);   // one act at a time, in order
+          wanted = "";
+          schedule();
+        };
+        img.src = "assets/film/" + act.name + "/f" + pad(k + 1) + ".webp";
       }
-      stage.style.opacity = "1";
+    }
+    // The nearest frame already loaded, so a slow connection shows a slightly older picture rather than a hole.
+    function frameOf(act, local) {
+      const k = Math.round(Math.min(Math.max(local, 0), 1) * (act.count - 1));
+      for (let d = 0; d < act.count; d++) {
+        if (act.frames[k - d]) return act.frames[k - d];
+        if (act.frames[k + d]) return act.frames[k + d];
+      }
+      return null;
+    }
+    function cover(img) {
+      const s = Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
+      const w = img.naturalWidth * s, h = img.naturalHeight * s;
+      ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+    }
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
+      if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; wanted = ""; }
+    }
+    function progress() {
+      const span = film.offsetHeight - window.innerHeight;
+      return span > 0 ? Math.min(Math.max(-film.getBoundingClientRect().top / span, 0), 1) : 0;
+    }
+    function draw() {
+      queued = false;
+      const p = progress();
+      const i = Math.min(Math.floor(p / share), acts.length - 1);
+      const act = acts[i];
+      const local = (p - act.from) / share;
+      // Captions, bar and nav follow the same progress.
+      if (intro) intro.classList.toggle("is-off", p > INTRO_END);
+      if (bar) bar.classList.toggle("is-on", p > INTRO_END && p < 0.995);
+      beats.forEach((b, n) => b.classList.toggle("is-on", n === i && local > (n === 0 ? 0.34 : 0.2) && local < 0.93));
+      steps.forEach((s, n) => s.classList.toggle("is-on", n === i));
+      underNav();
+      if (p > act.from + share * 0.35) load(i + 1);
+
+      const img = frameOf(act, local);
+      const wipe = i > 0 ? (p - act.from) / WIPE : 1;
+      const prev = wipe < 1 ? frameOf(acts[i - 1], 1) : null;
+      if (!img && !prev) return;
+      const key = i + ":" + (img ? img.src : "") + ":" + (prev ? wipe.toFixed(3) : "");
+      if (key === wanted) return;
+      wanted = key;
+      if (prev) {
+        // The new act shows through a ring that grows from the centre until it covers the screen.
+        cover(prev);
+        if (img) {
+          const eased = 1 - Math.pow(1 - wipe, 2);
+          const r = eased * Math.hypot(canvas.width, canvas.height) / 2;
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(canvas.width / 2, canvas.height / 2, r, 0, Math.PI * 2);
+          ctx.clip();
+          cover(img);
+          ctx.restore();
+          ctx.beginPath();
+          ctx.arc(canvas.width / 2, canvas.height / 2, r, 0, Math.PI * 2);
+          ctx.lineWidth = Math.max(2, canvas.width / 480);
+          ctx.strokeStyle = "rgba(168, 198, 232, " + (0.85 * (1 - wipe)).toFixed(3) + ")";
+          ctx.stroke();
+        }
+      } else {
+        cover(img);
+      }
+      if (!playing) { playing = true; film.classList.add("is-playing"); }
     }
 
-    new ResizeObserver(([entry]) => {
-      const next = measure(entry.contentRect.width, entry.contentRect.height);
-      if (!next) return;
-      if (layout && layout.columns === next.columns && layout.sweep === next.sweep && layout.unit === next.unit) return;
-      layout = next;
-      render(layout);
-    }).observe(band);
+    resize();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", () => { resize(); schedule(); });
+    // The first screen is the still: the frames start loading once the page itself has finished.
+    if (document.readyState === "complete") load(0);
+    else window.addEventListener("load", () => load(0), { once: true });
+    schedule();
   }
 
   // Home headline: the sector word slides up and out every 2.2 s while the next one springs in from below.
@@ -468,7 +510,7 @@
     initSpotlight();
     initPhoneTilt();
     initCircuit();
-    initTiltBand();
+    initHeroFilm();
     initRotator();
     initWelcome();
     markActiveNav();
