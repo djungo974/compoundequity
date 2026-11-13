@@ -209,7 +209,7 @@
       .filter((a) => a.name && a.count > 0);
 
     // The nav keeps the film's dark palette for as long as the film is under it.
-    const underNav = () => document.body.classList.toggle("film-on", film.getBoundingClientRect().bottom > 90);
+    const underNav = () => document.body.classList.toggle("film-on", film.getBoundingClientRect().bottom > 100);
     underNav();
     window.addEventListener("scroll", underNav, { passive: true });
 
@@ -472,14 +472,15 @@
     }
   }
 
-  // Two switches in the nav (founder, 2026-11-13: more visible than the old round sun/moon button): "Dark" for
+  // Two switches under the site's name in the nav (founder, 2026-11-13: more visible than the old round sun/moon
+  // button): "Dark" for
   // the theme and "Animations" for movement. They are real switches (role="switch"): the state shows at a glance
   // and screen readers announce it.
   // Theme: the choice is kept in this browser ("mm-theme", read before the page paints by a one-line script in
   // every page's head); without a choice the site follows the system setting. Animations: see applyMotion above.
   function initSwitches() {
-    const slot = document.querySelector(".nav-right");
-    if (!slot) return;
+    const brand = document.querySelector(".nav .container > .brand");
+    if (!brand) return;
     const root = document.documentElement;
     const media = window.matchMedia("(prefers-color-scheme: light)");
     const theme = () => root.getAttribute("data-theme") || (media.matches ? "light" : "dark");
@@ -529,7 +530,8 @@
     const box = document.createElement("div");
     box.className = "nav-switches";
     box.append(dark, motion);
-    slot.insertBefore(box, slot.firstChild);
+    // Under the site's name (style.css places it in the nav's grid).
+    brand.insertAdjacentElement("afterend", box);
     sync();
   }
 
