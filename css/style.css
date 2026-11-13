@@ -95,16 +95,64 @@
   :root:not([data-theme="dark"]) .hero-scrim { background: linear-gradient(90deg, rgba(15,19,23,.80) 0%, rgba(15,19,23,.52) 42%, rgba(15,19,23,.08) 100%); }
 }
 
-/* Sun/moon button (added to the nav by main.js): shows the theme you would switch to. */
-.theme-toggle {
-  width: 40px; height: 40px; border-radius: 999px; border: 1px solid var(--line-strong); background: transparent;
-  color: var(--text); display: inline-flex; align-items: center; justify-content: center; padding: 0; flex: none;
-  transition: border-color .25s var(--ease), color .25s var(--ease), background-color .25s var(--ease);
+/* Switches in the nav (added by main.js): "Dark" for the theme, "Animations" for movement. Label, track with a
+   sliding thumb, and the state in words. The thumb and its icon take colours that contrast in the light theme, the
+   dark theme and the dark nav over the home page's film alike. */
+.nav-switches { display: flex; align-items: center; gap: 16px; }
+.switch {
+  display: inline-flex; align-items: center; gap: 8px; flex: none; padding: 6px 0; border: 0; background: none;
+  color: var(--text-soft); font-family: var(--font-body); font-size: 12.5px; font-weight: 600; line-height: 1; cursor: pointer;
 }
-.theme-toggle:hover { border-color: var(--accent); color: var(--accent-soft); }
-.theme-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.theme-toggle svg { width: 18px; height: 18px; }
-.theme-toggle[data-mode="dark"] .i-moon, .theme-toggle[data-mode="light"] .i-sun { display: none; }
+.switch:hover { color: var(--text); }
+.switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 999px; }
+.switch-track {
+  position: relative; flex: none; width: 46px; height: 26px; border-radius: 999px;
+  border: 1px solid var(--line-strong); background: var(--hover-tint);
+  transition: background-color .25s var(--ease), border-color .25s var(--ease);
+}
+.switch-thumb {
+  position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%;
+  display: grid; place-items: center; background: var(--text); color: var(--on-accent);
+  transition: transform .25s var(--ease), background-color .25s var(--ease);
+}
+.switch-thumb svg { width: 13px; height: 13px; }
+.switch[aria-checked="true"] .switch-track { background: var(--accent); border-color: var(--accent); }
+.switch[aria-checked="true"] .switch-thumb { transform: translateX(20px); background: var(--on-accent); color: var(--accent); }
+.switch[aria-checked="true"] .i-sun, .switch[aria-checked="false"] .i-moon { display: none; }
+.switch-state { min-width: 20px; text-align: left; font-weight: 500; color: var(--text-faint); }
+.switch[aria-checked="true"] .switch-state { color: var(--text); }
+/* The theme switch says its state with the sun or the moon; only "Animations" spells it out. */
+.switch--theme .switch-state { display: none; }
+.switch[aria-checked="true"] .i-pause, .switch[aria-checked="false"] .i-play { display: none; }
+/* The nav never wraps: as the screen narrows the switches lose their words, one at a time, and keep their icons
+   (the title and the screen-reader name still say what they are). */
+.nav .brand span, .nav-links a { white-space: nowrap; }
+@media (max-width: 1240px) { .switch--theme .switch-label { display: none; } .nav-switches { gap: 12px; } }
+@media (max-width: 1180px) { .switch-state { display: none; } }
+@media (max-width: 1100px) { .switch-label { display: none; } }
+/* Tablets: the page links move into the menu a little earlier than on phones, to leave room for the switches. */
+/* ("header.nav": these come before the nav's own rules in this file and must win over them.) */
+@media (max-width: 1000px) { header.nav .nav-links { display: none; } header.nav .nav-burger { display: flex; } }
+@media (max-width: 860px) {
+  header.nav .container { gap: 12px; }
+  header.nav .nav-right, header.nav .nav-switches { gap: 8px; }
+  .switch-track { width: 38px; height: 22px; }
+  .switch-thumb { width: 16px; height: 16px; }
+  .switch-thumb svg { width: 11px; height: 11px; }
+  .switch[aria-checked="true"] .switch-thumb { transform: translateX(16px); }
+}
+@media (max-width: 400px) { header.nav .brand { font-size: 19px; gap: 8px; } header.nav .brand svg { width: 28px; height: 28px; } }
+@media (max-width: 380px) { header.nav .brand { font-size: 17px; gap: 7px; } header.nav .brand svg { width: 26px; height: 26px; } }
+@media (max-width: 340px) { header.nav .brand { font-size: 15px; gap: 6px; } }
+
+/* Animations off (the nav's switch, or the system setting "reduce motion" when the visitor has not chosen):
+   nothing animates, nothing slides, and what would have appeared while scrolling is simply there. main.js stops
+   the scripted movement (the film, the rotating word, the fading stills, the radar ping). */
+:root[data-motion="off"] { scroll-behavior: auto; }
+:root[data-motion="off"] *, :root[data-motion="off"] *::before, :root[data-motion="off"] *::after {
+  animation: none !important; transition: none !important;
+}
+:root[data-motion="off"] [data-reveal] { opacity: 1; transform: none; }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }

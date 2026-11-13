@@ -17,12 +17,27 @@
   };
   const REF_RE = /^[A-HJ-NP-Z2-9]{6}$/;
 
+  // Animations on or off (the "Animations" switch in the nav; founder, 2026-11-13: some visitors are sensitive to
+  // movement and flicker). The visitor's choice is kept in this browser ("mm-motion"); without one the site follows
+  // the system setting "reduce motion". data-motion="off" on <html> stops every CSS animation and transition
+  // (style.css); the scripts below ask motionOff() each time they are about to move something, so the switch
+  // works at once, without reloading. Scripts that have something to undo listen to the "mm:motion" event.
+  const systemReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  function storedMotion() {
+    try { const v = localStorage.getItem("mm-motion"); return v === "on" || v === "off" ? v : ""; } catch (e) { return ""; }
+  }
+  function applyMotion() {
+    document.documentElement.setAttribute("data-motion", storedMotion() || (systemReduce.matches ? "off" : "on"));
+  }
+  const motionOff = () => document.documentElement.getAttribute("data-motion") === "off";
+  applyMotion();
+
   // Radar ping: the normal pointer stays; entering a link or a button sends one blue ring out from the pointer.
-  // Mouse and trackpad only, and never for visitors who asked their system to reduce motion.
+  // Mouse and trackpad only, and never while animations are off.
   function initCursor() {
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     document.addEventListener("pointerover", (e) => {
+      if (motionOff()) return;
       if (e.pointerType && e.pointerType !== "mouse") return;
       const target = e.target.closest && e.target.closest("a, button, summary, [role='button']");
       if (!target || target.contains(e.relatedTarget)) return;
@@ -34,6 +49,8 @@
       document.body.appendChild(ping);
       ping.addEventListener("animationend", () => ping.remove());
     });
+    // A ring caught mid-flight when animations are switched off would never end: take it away.
+    document.addEventListener("mm:motion", () => { if (motionOff()) document.querySelectorAll(".cursor-ping").forEach((p) => p.remove()); });
   }
 
   function initNavScroll() {
@@ -74,7 +91,7 @@
     if (!match) return;
     const [, prefix, numStr, suffix] = match;
     const target = parseFloat(numStr.replace(",", "."));
-    if (isNaN(target)) return;
+    if (isNaN(target) || motionOff()) return;
     const start = performance.now();
     (function frame(now) {
       const p = Math.min(1, (now - start) / 1200);
@@ -102,6 +119,7 @@
     if (window.matchMedia("(hover: none)").matches) return;
     document.querySelectorAll("[data-magnetic]").forEach((btn) => {
       btn.addEventListener("mousemove", (e) => {
+        if (motionOff()) return;
         const r = btn.getBoundingClientRect();
         btn.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.25}px, ${(e.clientY - r.top - r.height / 2) * 0.35}px)`;
       });
@@ -113,9 +131,10 @@
     const root = document.getElementById("heroCarousel");
     if (!root) return;
     const slides = Array.from(root.querySelectorAll(".carousel-slide"));
-    if (slides.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (slides.length < 2) return;
     let index = 0;
     setInterval(() => {
+      if (motionOff()) return;
       index = (index + 1) % slides.length;
       slides.forEach((s, n) => s.classList.toggle("is-active", n === index));
     }, 7000);
@@ -152,10 +171,12 @@
   // "This is what arrives": the Telegram phone leans back and straightens up as it scrolls into view.
   function initPhoneTilt() {
     const phone = document.querySelector("[data-tilt]");
-    if (!phone || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!phone) return;
     let queued = false;
     const update = () => {
       queued = false;
+      // Animations off: the phone stands straight.
+      if (motionOff()) { phone.style.removeProperty("--tilt"); phone.style.removeProperty("--tilt-scale"); return; }
       const r = phone.getBoundingClientRect();
       const h = window.innerHeight;
       // 0 when the phone's top enters the bottom of the screen, 1 once it has risen to 35% from the top.
@@ -166,6 +187,7 @@
     const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
+    document.addEventListener("mm:motion", update);
     update();
   }
 
@@ -173,12 +195,12 @@
   // (tools/extract-frames.mjs writes assets/film/<act>/f001.webp …). The section is 430vh tall and its inside sticks
   // to the screen: how far you are through it picks the frame drawn on the canvas, so scrolling down plays the film
   // and scrolling up rewinds it. An act opens through a ring growing from the centre, like a radar ping.
-  // Phones, reduced motion and data saver never load the frames: they get three stills fading into each other.
+  // Phones and data saver never load the frames: they get three stills fading into each other.
+  // With animations off (the nav's switch) it is a plain hero over one still, on every device.
   function initHeroFilm() {
     const film = document.querySelector("[data-film]");
     if (!film) return;
     const stills = Array.from(film.querySelectorAll(".film-still"));
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const conn = navigator.connection || {};
     const canvas = film.querySelector(".film-canvas");
     const ctx = canvas && canvas.getContext ? canvas.getContext("2d") : null;
@@ -189,20 +211,28 @@
     // The nav keeps the film's dark palette for as long as the film is under it.
     const underNav = () => document.body.classList.toggle("film-on", film.getBoundingClientRect().bottom > 90);
     underNav();
+    window.addEventListener("scroll", underNav, { passive: true });
 
-    // "3g" is not excluded: desktop browsers report it on good connections too (it is an estimate).
-    // Browsers without "overflow: clip" keep body as a scrolling box (style.css), where the film could not stick.
+    // Can this device play the film at all? "3g" is not excluded: desktop browsers report it on good connections
+    // too (it is an estimate). Browsers without "overflow: clip" keep body as a scrolling box (style.css), where
+    // the film could not stick.
     const sticks = window.CSS && CSS.supports && CSS.supports("overflow-x", "clip");
-    if (!ctx || !acts.length || !sticks || reduced || conn.saveData || /2g$/.test(conn.effectiveType || "") || window.matchMedia("(max-width: 860px)").matches) {
-      window.addEventListener("scroll", underNav, { passive: true });
-      if (reduced || stills.length < 2) return;
-      stills.forEach((img) => { if (img.dataset.src) img.src = img.dataset.src; });
+    const canFilm = ctx && acts.length && sticks && !conn.saveData && !/2g$/.test(conn.effectiveType || "") && !window.matchMedia("(max-width: 860px)").matches;
+
+    if (!canFilm) {
+      // The stills fade into each other while animations are on; off, the first one stays.
+      if (stills.length < 2) return;
       let shown = 0;
+      const show = (n) => { stills.forEach((img, k) => img.classList.toggle("is-on", k === n)); shown = n; };
+      const fetchStills = () => stills.forEach((img) => { if (img.dataset.src && !img.getAttribute("src")) img.src = img.dataset.src; });
+      if (!motionOff()) fetchStills();
       setInterval(() => {
-        stills[shown].classList.remove("is-on");
-        shown = (shown + 1) % stills.length;
-        stills[shown].classList.add("is-on");
+        if (motionOff()) return;
+        fetchStills();
+        const next = (shown + 1) % stills.length;
+        if (stills[next].complete && stills[next].naturalWidth) show(next);
       }, 5200);
+      document.addEventListener("mm:motion", () => { if (motionOff()) show(0); });
       return;
     }
 
@@ -214,9 +244,9 @@
     const WIPE = 0.045;       // share of the scroll an act takes to open through the ring
     const share = 1 / acts.length;
     acts.forEach((a, i) => { a.from = i * share; a.to = (i + 1) * share; });
-    film.classList.add("is-film");
 
     const pad = (n) => String(n).padStart(3, "0");
+    let on = false;           // the film is running; false = the plain hero (animations off)
     let wanted = "";          // what the last draw was asked to show, to skip identical redraws
     let playing = false;
     let queued = false;
@@ -263,6 +293,7 @@
     }
     function draw() {
       queued = false;
+      if (!on) return;
       const p = progress();
       const i = Math.min(Math.floor(p / share), acts.length - 1);
       const act = acts[i];
@@ -306,21 +337,52 @@
       if (!playing) { playing = true; film.classList.add("is-playing"); }
     }
 
-    resize();
+    // Film or plain hero, following the Animations switch. The section is 330vh taller as a film: when it changes
+    // above the visitor, the scroll position moves by the same amount so the page does not jump under their eyes;
+    // a visitor who was inside the film goes back to its top.
+    function setMode() {
+      const want = !motionOff();
+      if (want === on) return;
+      const r = film.getBoundingClientRect();
+      // Some browsers move the scroll position by themselves when content above grows, others don't: switch that
+      // off for this change and do it here, measured on the film's own bottom edge.
+      const html = document.documentElement;
+      html.style.overflowAnchor = "none";
+      on = want;
+      film.classList.toggle("is-film", on);
+      if (on) {
+        resize();
+        wanted = "";
+        if (document.readyState === "complete") load(0);
+      } else {
+        playing = false;
+        film.classList.remove("is-playing");
+        if (intro) intro.classList.remove("is-off");
+        if (bar) bar.classList.remove("is-on");
+        beats.forEach((b) => b.classList.remove("is-on"));
+      }
+      if (r.bottom <= 0) window.scrollBy({ top: film.getBoundingClientRect().bottom - r.bottom, behavior: "instant" });
+      else if (r.top < 0) window.scrollTo({ top: 0, behavior: "instant" });
+      requestAnimationFrame(() => { html.style.overflowAnchor = ""; });
+      underNav();
+      schedule();
+    }
+
     window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", () => { resize(); schedule(); });
+    window.addEventListener("resize", () => { if (on) { resize(); schedule(); } });
     // The first screen is the still: the frames start loading once the page itself has finished.
-    if (document.readyState === "complete") load(0);
-    else window.addEventListener("load", () => load(0), { once: true });
-    schedule();
+    window.addEventListener("load", () => { if (on) load(0); }, { once: true });
+    document.addEventListener("mm:motion", setMode);
+    setMode();
   }
 
   // Home headline: the sector word slides up and out every 2.2 s while the next one springs in from below.
   function initRotator() {
     const words = Array.from(document.querySelectorAll(".rot-words .rot-word"));
-    if (words.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (words.length < 2) return;
     let i = 0;
     setInterval(() => {
+      if (motionOff()) return;   // the word on screen stays
       const cur = words[i];
       i = (i + 1) % words.length;
       const next = words[i];
@@ -340,13 +402,14 @@
     const circuit = document.querySelector("[data-circuit]");
     if (!circuit) return;
     const steps = Array.from(circuit.querySelectorAll(".circuit-step"));
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const light = () => steps.forEach((s, i) => setTimeout(() => s.classList.add("is-on"), reduce ? 0 : 150 + 380 * i));
-    if (reduce || !("IntersectionObserver" in window)) { light(); return; }
+    const light = () => steps.forEach((s, i) => setTimeout(() => s.classList.add("is-on"), motionOff() ? 0 : 150 + 380 * i));
+    if (motionOff() || !("IntersectionObserver" in window)) { light(); return; }
     const io = new IntersectionObserver((entries) => {
       if (entries.some((e) => e.isIntersecting)) { light(); io.disconnect(); }
     }, { threshold: 0.35 });
     io.observe(circuit);
+    // Animations switched off before the circuit came into view: every step is simply lit.
+    document.addEventListener("mm:motion", () => { if (motionOff()) { light(); io.disconnect(); } });
   }
 
   // Every Telegram sign-up button ("Join free on Telegram", "Unlock Pro in Telegram") gets the same look:
@@ -409,35 +472,64 @@
     }
   }
 
-  // Sun/moon button in the nav. The visitor's choice is kept in this browser ("mm-theme", read before the page
-  // paints by a one-line script in every page's head); without a choice the site follows the system setting.
-  function initThemeToggle() {
+  // Two switches in the nav (founder, 2026-11-13: more visible than the old round sun/moon button): "Dark" for
+  // the theme and "Animations" for movement. They are real switches (role="switch"): the state shows at a glance
+  // and screen readers announce it.
+  // Theme: the choice is kept in this browser ("mm-theme", read before the page paints by a one-line script in
+  // every page's head); without a choice the site follows the system setting. Animations: see applyMotion above.
+  function initSwitches() {
     const slot = document.querySelector(".nav-right");
     if (!slot) return;
     const root = document.documentElement;
     const media = window.matchMedia("(prefers-color-scheme: light)");
-    const current = () => root.getAttribute("data-theme") || (media.matches ? "light" : "dark");
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "theme-toggle";
-    btn.innerHTML =
-      '<svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>' +
-      '<svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>';
-    const sync = () => {
-      const mode = current();
-      const next = mode === "light" ? "dark" : "light";
-      btn.dataset.mode = mode;
-      btn.setAttribute("aria-label", "Switch to " + next + " mode");
-      btn.title = "Switch to " + next + " mode";
+    const theme = () => root.getAttribute("data-theme") || (media.matches ? "light" : "dark");
+    const make = (kind, label, thumb) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "switch switch--" + kind;
+      b.setAttribute("role", "switch");
+      b.innerHTML = '<span class="switch-label">' + label + '</span><span class="switch-track"><span class="switch-thumb">' + thumb + '</span></span><span class="switch-state" aria-hidden="true"></span>';
+      return b;
     };
-    btn.addEventListener("click", () => {
-      const next = current() === "light" ? "dark" : "light";
+    const dark = make("theme", "Dark",
+      '<svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>' +
+      '<svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>');
+    // Play triangle while things move, pause bars once they are stopped.
+    const motion = make("motion", "Animations",
+      '<svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>' +
+      '<svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>');
+    const sync = () => {
+      const isDark = theme() === "dark";
+      dark.setAttribute("aria-checked", String(isDark));
+      dark.setAttribute("aria-label", "Dark mode");
+      dark.title = isDark ? "Dark mode is on. Click for light mode." : "Dark mode is off. Click for dark mode.";
+      dark.querySelector(".switch-state").textContent = isDark ? "On" : "Off";
+      const moving = !motionOff();
+      motion.setAttribute("aria-checked", String(moving));
+      motion.setAttribute("aria-label", "Animations");
+      motion.title = moving ? "Animations are on. Click to stop every animation on this site." : "Animations are off. Click to switch them back on.";
+      motion.querySelector(".switch-state").textContent = moving ? "On" : "Off";
+    };
+    dark.addEventListener("click", () => {
+      const next = theme() === "light" ? "dark" : "light";
       root.setAttribute("data-theme", next);
       try { localStorage.setItem("mm-theme", next); } catch (e) { /* storage blocked: the choice lasts for this page */ }
       sync();
     });
+    const motionChanged = () => { sync(); document.dispatchEvent(new Event("mm:motion")); };
+    motion.addEventListener("click", () => {
+      const next = motionOff() ? "on" : "off";
+      try { localStorage.setItem("mm-motion", next); } catch (e) { /* storage blocked: the choice lasts for this page */ }
+      root.setAttribute("data-motion", next);
+      motionChanged();
+    });
     if (media.addEventListener) media.addEventListener("change", sync);
-    slot.insertBefore(btn, slot.firstChild);
+    // The system setting changes while the page is open: follow it unless the visitor chose here.
+    if (systemReduce.addEventListener) systemReduce.addEventListener("change", () => { if (!storedMotion()) { applyMotion(); motionChanged(); } });
+    const box = document.createElement("div");
+    box.className = "nav-switches";
+    box.append(dark, motion);
+    slot.insertBefore(box, slot.firstChild);
     sync();
   }
 
@@ -495,7 +587,7 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    initThemeToggle();
+    initSwitches();
     initCursor();
     initNavScroll();
     initMobileNav();
