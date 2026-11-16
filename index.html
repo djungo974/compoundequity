@@ -68,17 +68,14 @@
       <div class="film-shade" aria-hidden="true"></div>
 
       <div class="container film-copy" data-film-intro>
-        <div class="eyebrow" data-reveal>Every Sunday on Telegram</div>
-        <h1 data-reveal data-reveal-delay="1">
-          <span>What mattered this week in</span>
-          <span class="sr-only">uranium, critical minerals, defense and military AI,</span>
-          <span class="rot-words" aria-hidden="true"><span class="rot-word is-active">uranium,</span><span class="rot-word">critical minerals,</span><span class="rot-word">defense,</span><span class="rot-word">military AI,</span></span>
-          <em>explained in 10 minutes.</em>
-        </h1>
-        <p class="hero-sub" data-reveal data-reveal-delay="2">We read the filings, contract awards, licensing decisions and policy moves so you don't have to. Every Sunday you read the signals that mattered — explained simply, with their sources. No email, no inbox clutter: it arrives in Telegram.</p>
-        <div class="hero-cta" data-reveal data-reveal-delay="3">
+        <!-- First screen, after the "mirror test" (founder, 2026-11-16): who it is for, what you get, one thing to
+             do. Its words are there at once: no fade-in, no moving word. Only the film moves. -->
+        <div class="eyebrow">For investors in uranium, critical minerals and defense</div>
+        <h1>What mattered this week in uranium, critical minerals and defense, <em>explained in 10 minutes.</em></h1>
+        <p class="hero-sub">We read the filings, contract awards, licensing decisions and policy moves so you don't have to. Every Sunday you read the signals that mattered — explained simply, with their sources. No email, no inbox clutter: it arrives in Telegram.</p>
+        <div class="hero-cta">
           <a href="https://t.me/MetalsMachinesBot" data-bot-link class="btn btn-primary" data-magnetic>Join free on Telegram</a>
-          <a href="#plans" class="btn btn-ghost" data-magnetic>Compare free and Pro</a>
+          <a href="#plans" class="text-link">Compare free and Pro →</a>
         </div>
         <div class="film-hint" aria-hidden="true">Scroll to play the film</div>
       </div>
@@ -130,36 +127,41 @@
     </div>
   </div>
 
-  <!-- WHAT ARRIVES: the sample issue (real, sourced news from September 2026) as it looks in Telegram -->
+  <!-- WHAT ARRIVES: the latest free issue really sent to the public channel, as it looks in Telegram (founder,
+       2026-11-16: a real issue, not a sample). The HTML below is the issue of 8 November 2026, word for word;
+       main.js replaces it with the newest entry of data/issues.json when the file can be read. -->
   <section class="section" id="arrives">
     <div class="container arrives">
       <div class="arrives-copy" data-reveal>
-        <div class="eyebrow">Every Sunday on Telegram</div>
+        <div class="eyebrow">The latest free issue</div>
         <h2>This is what arrives.</h2>
-        <p>One line per sector, bold headlines, a link to every source, and the author's disclosure. Pro adds the deep dives, the watchlist, next week's calendar and the alerts.</p>
-        <p class="arrives-note">Example built from real, sourced news of September 2026. It was not sent to subscribers.</p>
-        <a href="sample-brief.html" class="btn btn-ghost">See the full sample issue →</a>
+        <p>One line per sector, bold headlines and the author's disclosure. Pro adds the deep dives with a link to every source, the watchlist, next week's calendar and the alerts.</p>
+        <p class="arrives-note" data-issue-note>Sent to the free channel on Sunday, November 8, 2026, exactly as shown.</p>
+        <div class="arrives-links">
+          <a href="archive.html" class="btn btn-ghost">See past issues →</a>
+          <a href="sample-brief.html" class="text-link">What a full Pro issue looks like →</a>
+        </div>
       </div>
-      <div class="tg-stage" aria-label="Example of a weekly issue as it appears in Telegram">
+      <div class="tg-stage" aria-label="The latest free issue as it appears in Telegram">
         <div class="tg-phone" data-tilt>
           <div class="tg-screen">
             <div class="tg-head">
               <span class="tg-avatar" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="11" stroke="#A8C6E8" stroke-width="2"/><path d="M16 16L24 10" stroke="#A8C6E8" stroke-width="2" stroke-linecap="round"/></svg></span>
               <span><b>Metals &amp; Machines</b><small>channel</small></span>
             </div>
-            <div class="tg-chat">
-              <span class="tg-day">Sunday</span>
+            <div class="tg-chat" data-latest-issue>
+              <span class="tg-day">Sunday, November 8</span>
               <div class="tg-bubble">
-                <img src="assets/img/tg-sample.jpg" alt="Gas centrifuges used to enrich uranium" width="640" height="400" loading="lazy">
+                <img src="assets/img/issues/2026-11-08.jpg" alt="The Beaver Valley nuclear plant, Pennsylvania" width="960" height="641" loading="lazy">
                 <div class="tg-text">
-                  <p><b>METALS &amp; MACHINES · WEEKLY</b><br><b>Cameco becomes exclusive buyer of Paducah's laser-enriched uranium</b></p>
+                  <p><b>METALS &amp; MACHINES · WEEKLY #1</b><br><b>US funds recycled nuclear fuel projects for advanced reactors</b></p>
                   <p class="tg-rule">──────────────</p>
                   <p><b>THE WEEK IN 60 SECONDS</b></p>
-                  <p>🟢 <b>Uranium</b> — Cameco becomes the exclusive buyer of Paducah's future laser-enriched uranium, a plant that still needs its NRC license.</p>
-                  <p>🟠 <b>Mining</b> — DOE puts $73M behind four mining-technology test projects: funding, not new production.</p>
-                  <p>🟣 <b>Defense</b> — The Pentagon's in-house AI platform crosses 2 million weekly logins.</p>
+                  <p>🟢 <b>Uranium</b> — The US Department of Energy's ARPA-E HORNIG programme awarded funding to Westinghouse, Texas A&amp;M, Standard Nuclear, Oregon State University, Oklo and Exodys Energy for projects that recycle transuranic elements from used fuel into fuel for advanced reactors.</p>
+                  <p>🟠 <b>Mining</b> — Copper markets are waiting on a US tariff decision, while Grindrod ran its first private test train to Komatipoort and Ivanhoe posted a profitable quarter on record Kamoa-Kakula revenue.</p>
+                  <p>🟣 <b>Defense &amp; AI</b> — Half of the US Navy's Japan-based destroyers and the carrier George Washington are deployed to Central Command for the war on Iran, pulling assets from the Pacific.</p>
                   <p class="tg-quote"><b>Disclosure</b><br>The watchlist is built from the largest holdings of three reference ETFs…</p>
-                  <span class="tg-time">09:00</span>
+                  <span class="tg-time">08:00</span>
                 </div>
               </div>
             </div>
@@ -223,7 +225,7 @@
         <div class="plan" data-reveal data-reveal-delay="2">
           <div class="plan-name">Pro monthly</div>
           <h3>The full issue</h3>
-          <div class="plan-price">$29<span> / month</span></div>
+          <div class="plan-price">$14.99<span> / month</span></div>
           <p class="plan-alt">Cancel anytime</p>
           <p class="plan-desc">The full Sunday issue, the alerts and a monthly recap, in a private Telegram channel.</p>
           <ul class="plan-features">
@@ -237,15 +239,15 @@
         </div>
 
         <div class="plan featured" data-reveal data-reveal-delay="3">
-          <div class="plan-badge">2 months free</div>
+          <div class="plan-badge">Save 33%</div>
           <div class="plan-name">Pro annual</div>
           <h3>The full issue</h3>
-          <div class="plan-price">$290<span> / year</span></div>
-          <p class="plan-alt">Billed once a year — about $24 a month</p>
-          <p class="plan-desc">Everything in Pro monthly, for the price of ten months.</p>
+          <div class="plan-price">$120<span> / year</span></div>
+          <p class="plan-alt">Billed once a year — $10 a month</p>
+          <p class="plan-desc">Everything in Pro monthly, for a third less.</p>
           <ul class="plan-features">
             <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg>Everything in Pro monthly</li>
-            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg>Two months free compared with paying monthly</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg>Save $59.88 a year compared with paying monthly</li>
             <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg>Cancel anytime; access runs to the end of your year</li>
           </ul>
           <a href="https://t.me/MetalsMachinesBot" data-bot-link data-pay="annual" class="btn btn-primary btn-block">Go Pro — annual</a>
@@ -298,7 +300,7 @@
       </div>
       <div>
         <h5>Product</h5>
-        <ul><li><a href="sectors.html">Sectors</a></li><li><a href="sample-brief.html">Sample issue</a></li><li><a href="pricing.html">Pricing</a></li></ul>
+        <ul><li><a href="sectors.html">Sectors</a></li><li><a href="sample-brief.html">Sample issue</a></li><li><a href="archive.html">Past issues</a></li><li><a href="pricing.html">Pricing</a></li></ul>
       </div>
       <div>
         <h5>Company</h5>
@@ -314,7 +316,7 @@
       <span>Not investment advice.</span>
     </div>
     <p class="footer-legal">Metals &amp; Machines is a publisher of general financial research. It is not a registered investment adviser or broker-dealer and does not give personalized investment advice. Every subscriber receives the same content. The author holds ETFs in the sectors discussed; see the Disclosure policy. Investing involves risk, including the loss of principal.</p>
-    <p class="footer-credits">Film at the top of the page, public domain, cropped and resized: steel forged at Scranton Army Ammunition Plant, <a href="https://www.dvidshub.net/video/928362/press-process-scranton-army-ammunition-plant" target="_blank" rel="noopener">U.S. Army video by Dori Whipple</a> · the eastern United States at night from the International Space Station, <a href="https://eol.jsc.nasa.gov/Videos/CrewEarthObservationsVideos/NorthAmerica.htm#eastUS_iss_20150111" target="_blank" rel="noopener">ISS Crew Earth Observations Facility and the Earth Science and Remote Sensing Unit, NASA Johnson Space Center</a> · an uncrewed XQ-58A Valkyrie flying with an F-22 and an F-35, <a href="https://www.dvidshub.net/video/914717/xq-58a-test-flight-b-roll" target="_blank" rel="noopener">U.S. Air Force video by the 3rd Audiovisual Squadron</a>. Photos: city lights of the United States, <a href="https://commons.wikimedia.org/wiki/File:City_Lights_of_the_United_States_2012.jpg" target="_blank" rel="noopener">NASA Earth Observatory</a>, public domain, resized and darkened · gas centrifuge cascade, <a href="https://commons.wikimedia.org/wiki/File:Gas_centrifuge_cascade.jpg" target="_blank" rel="noopener">U.S. Department of Energy</a>, public domain, resized and darkened. The appearance of U.S. Department of Defense visual information does not imply or constitute DoD endorsement; use of these images does not imply endorsement by NASA or any other U.S. government agency.</p>
+    <p class="footer-credits">Film at the top of the page, public domain, cropped and resized: steel forged at Scranton Army Ammunition Plant, <a href="https://www.dvidshub.net/video/928362/press-process-scranton-army-ammunition-plant" target="_blank" rel="noopener">U.S. Army video by Dori Whipple</a> · the eastern United States at night from the International Space Station, <a href="https://eol.jsc.nasa.gov/Videos/CrewEarthObservationsVideos/NorthAmerica.htm#eastUS_iss_20150111" target="_blank" rel="noopener">ISS Crew Earth Observations Facility and the Earth Science and Remote Sensing Unit, NASA Johnson Space Center</a> · an uncrewed XQ-58A Valkyrie flying with an F-22 and an F-35, <a href="https://www.dvidshub.net/video/914717/xq-58a-test-flight-b-roll" target="_blank" rel="noopener">U.S. Air Force video by the 3rd Audiovisual Squadron</a>. Photos: the Beaver Valley nuclear plant, Pennsylvania, <a href="https://commons.wikimedia.org/wiki/File:Beaver_Valley_Nuclear_Power_Plant.jpg" target="_blank" rel="noopener">U.S. Nuclear Regulatory Commission</a>, public domain, resized · city lights of the United States, <a href="https://commons.wikimedia.org/wiki/File:City_Lights_of_the_United_States_2012.jpg" target="_blank" rel="noopener">NASA Earth Observatory</a>, public domain, resized and darkened · gas centrifuge cascade, <a href="https://commons.wikimedia.org/wiki/File:Gas_centrifuge_cascade.jpg" target="_blank" rel="noopener">U.S. Department of Energy</a>, public domain, resized and darkened. The appearance of U.S. Department of Defense visual information does not imply or constitute DoD endorsement; use of these images does not imply endorsement by NASA or any other U.S. government agency.</p>
   </div>
 </footer>
 

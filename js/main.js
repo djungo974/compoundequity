@@ -376,25 +376,76 @@
     setMode();
   }
 
-  // Home headline: the sector word slides up and out every 2.2 s while the next one springs in from below.
-  function initRotator() {
-    const words = Array.from(document.querySelectorAll(".rot-words .rot-word"));
-    if (words.length < 2) return;
-    let i = 0;
-    setInterval(() => {
-      if (motionOff()) return;   // the word on screen stays
-      const cur = words[i];
-      i = (i + 1) % words.length;
-      const next = words[i];
-      // The next word starts below the line without animating there, then springs in.
-      next.classList.add("no-anim");
-      next.classList.remove("is-before");
-      void next.offsetWidth;
-      next.classList.remove("no-anim");
-      cur.classList.remove("is-active");
-      cur.classList.add("is-before");
-      next.classList.add("is-active");
-    }, 2200);
+  // Past issues: data/issues.json lists every free issue really sent to the public channel, newest first. The home
+  // page's phone shows the newest one and archive.html lists them all. Both pages already hold the first issue as
+  // plain HTML, so nothing is lost if the file cannot be read. Everything goes in as text, never as HTML.
+  function initIssues() {
+    const phone = document.querySelector("[data-latest-issue]");
+    const list = document.querySelector("[data-archive]");
+    if (!phone && !list) return;
+    const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; };
+    const when = (date, opts) => new Date(date + "T12:00:00Z").toLocaleDateString("en-US", { timeZone: "UTC", ...opts });
+    const photoOf = (issue) => {
+      const p = issue.photo;
+      if (!p || !/^assets\/img\/issues\/[\w.-]+$/.test(p.src || "")) return null;
+      const img = el("img");
+      img.src = p.src; img.alt = p.alt || ""; img.loading = "lazy";
+      return img;
+    };
+    const line = (tag, l) => { const p = el(tag); p.append((l.mark ? l.mark + " " : ""), el("b", "", l.sector || ""), " — " + (l.text || "")); return p; };
+
+    function renderPhone(issue) {
+      const bubble = el("div", "tg-bubble");
+      const img = photoOf(issue);
+      if (img) bubble.appendChild(img);
+      const text = el("div", "tg-text");
+      const head = el("p");
+      head.append(el("b", "", "METALS & MACHINES · WEEKLY" + (issue.no ? " #" + issue.no : "")), el("br"), el("b", "", issue.title));
+      const quote = el("p", "tg-quote");
+      quote.append(el("b", "", "Disclosure"), el("br"), "The watchlist is built from the largest holdings of three reference ETFs…");
+      text.append(head, el("p", "tg-rule", "──────────────"), (() => { const p = el("p"); p.appendChild(el("b", "", "THE WEEK IN 60 SECONDS")); return p; })(),
+        ...issue.lines.map((l) => line("p", l)), quote, el("span", "tg-time", issue.time || "09:00"));
+      bubble.appendChild(text);
+      phone.replaceChildren(el("span", "tg-day", when(issue.date, { weekday: "long", month: "long", day: "numeric" })), bubble);
+      const note = document.querySelector("[data-issue-note]");
+      if (note) note.textContent = "Sent to the free channel on " + when(issue.date, { weekday: "long", month: "long", day: "numeric", year: "numeric" }) + ", exactly as shown.";
+    }
+
+    function renderArchive(issues) {
+      list.replaceChildren(...issues.map((issue) => {
+        const card = el("article", "issue-card");
+        card.append(el("p", "issue-meta", when(issue.date, { weekday: "long", month: "long", day: "numeric", year: "numeric" }) + (issue.no ? " · Weekly #" + issue.no : "")), el("h2", "", issue.title));
+        const img = photoOf(issue);
+        if (img) {
+          const fig = el("figure", "issue-photo");
+          const cap = el("figcaption", "", (issue.photo.caption || "") + " ");
+          if (/^https:\/\/commons\.wikimedia\.org\//.test(issue.photo.link || "")) {
+            const a = el("a", "", issue.photo.credit || "Source");
+            a.href = issue.photo.link; a.target = "_blank"; a.rel = "noopener";
+            cap.appendChild(a);
+          } else cap.append(issue.photo.credit || "");
+          fig.append(img, cap);
+          card.appendChild(fig);
+        }
+        const ul = el("ul", "issue-lines");
+        ul.append(...issue.lines.map((l) => line("li", l)));
+        card.append(el("h3", "", "The week in 60 seconds"), ul);
+        if (issue.pro) { const p = el("p", "issue-pro"); p.append(el("b", "", "In Pro that week: "), issue.pro); card.appendChild(p); }
+        return card;
+      }));
+    }
+
+    fetch("data/issues.json", { cache: "no-cache" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        const issues = (data && Array.isArray(data.issues) ? data.issues : [])
+          .filter((i) => i && /^\d{4}-\d{2}-\d{2}$/.test(i.date || "") && i.title && Array.isArray(i.lines) && i.lines.length)
+          .sort((a, b) => b.date.localeCompare(a.date));
+        if (!issues.length) return;
+        if (phone) renderPhone(issues[0]);
+        if (list) renderArchive(issues);
+      })
+      .catch(() => { /* the page keeps the issue written in its HTML */ });
   }
 
   // How it works: the three steps of the circuit light up one after the other when it comes into view.
@@ -605,7 +656,7 @@
     initPhoneTilt();
     initCircuit();
     initHeroFilm();
-    initRotator();
+    initIssues();
     initWelcome();
     markActiveNav();
   });
