@@ -432,7 +432,7 @@ section { position: relative; }
 .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; align-items: stretch; }
 .plan { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-l); padding: 34px 30px; display: flex; flex-direction: column; position: relative; }
 .plan.featured { border-color: rgba(127,169,216,.6); box-shadow: 0 0 0 1px rgba(127,169,216,.25), 0 40px 80px -40px rgba(127,169,216,.35); }
-/* Gold "Save 33%" badge on the annual plan, with a slow light sweep (still for visitors who reduce motion). */
+/* Gold "2 months free" badge on the annual plan, with a slow light sweep (still for visitors who reduce motion). */
 .plan-badge {
   position: absolute; top: 20px; right: 20px; overflow: hidden; isolation: isolate;
   font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px;
@@ -755,23 +755,18 @@ html { scrollbar-width: thin; scrollbar-color: var(--line-strong) var(--bg); }
 @keyframes beam-spin { to { --beam-angle: 360deg; } }
 
 /* ---------- Sources strip under the hero ---------- */
-.source-strip { border-bottom: 1px solid var(--line); background: var(--bg); padding: 16px 0; }
-.source-strip-inner { display: flex; align-items: center; gap: 22px; }
-.source-strip-label { flex: none; font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--accent-soft); }
-.source-strip-viewport {
-  flex: 1; min-width: 0; overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+.source-strip { border-bottom: 1px solid var(--line); background: var(--bg); padding: 28px 0; }
+.source-strip-inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr); gap: 20px 48px; align-items: start; }
+.source-strip-lead h2 { margin: 0 0 6px; font-size: 17px; line-height: 1.3; letter-spacing: 0; }
+.source-strip-lead p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-soft); }
+.source-groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 40px; margin: 0; }
+.source-groups dt { margin-bottom: 8px; font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--accent-soft); }
+.source-groups dd { margin: 0 0 4px; font-family: var(--font-mono); font-size: 13px; line-height: 1.5; color: var(--text-soft); }
+@media (max-width: 860px) {
+  .source-strip-inner { grid-template-columns: minmax(0, 1fr); }
 }
-.source-strip-track { display: flex; width: max-content; animation: strip-scroll 38s linear infinite; }
-.source-strip-viewport:hover .source-strip-track { animation-play-state: paused; }
-.source-strip-track ul { display: flex; flex: none; margin: 0; padding: 0; list-style: none; }
-.source-strip-track li { font-family: var(--font-mono); font-size: 13px; color: var(--text-soft); white-space: nowrap; padding-right: 34px; position: relative; }
-.source-strip-track li::after { content: ""; position: absolute; right: 15px; top: 50%; width: 4px; height: 4px; margin-top: -2px; border-radius: 50%; background: var(--accent); opacity: .7; }
-@keyframes strip-scroll { to { transform: translateX(-50%); } }
-@media (max-width: 600px) {
-  .source-strip-inner { flex-direction: column; align-items: flex-start; gap: 10px; }
-  .source-strip-viewport { width: 100%; }
+@media (max-width: 560px) {
+  .source-groups { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* ---------- "This is what arrives": the sample issue in a Telegram phone that straightens as you scroll ---------- */
@@ -813,8 +808,6 @@ html { scrollbar-width: thin; scrollbar-color: var(--line-strong) var(--bg); }
 
 @media (prefers-reduced-motion: reduce) {
   .plan.featured::after { animation: none; }
-  .source-strip-track { animation: none; }
-  .source-strip-track ul[aria-hidden] { display: none; }
   .tg-phone { transform: none; }
 }
 
@@ -1009,3 +1002,16 @@ html { scrollbar-width: thin; scrollbar-color: var(--line-strong) var(--bg); }
 @media (max-width: 600px) { .issue-card { padding: 22px 20px; } }
 /* Phones: the label over the film runs on two lines, so it is centred and loses its little rule. */
 @media (max-width: 600px) { .film-copy .eyebrow { text-align: center; } .film-copy .eyebrow::before { display: none; } }
+
+/* ---------- The three commitments, on the first screen and above the plans (founder, 2026-11-18) ---------- */
+.trust-line { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; width: fit-content; max-width: 100%; margin: 0 auto; padding: 10px 22px; list-style: none; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); color: var(--text); font-size: 15px; font-weight: 600; line-height: 1.4; }
+.trust-line li + li::before { content: "·"; margin: 0 12px; color: var(--text-soft); }
+.trust-line a { color: inherit; border-bottom: 1px solid var(--line-strong); transition: border-color .25s var(--ease); }
+.trust-line a:hover { border-color: currentColor; }
+.film-copy .trust-line { margin-top: 22px; background: rgba(8, 11, 14, .58); border-color: rgba(255, 255, 255, .24); }
+.film-copy .trust-line a { border-color: rgba(255, 255, 255, .45); }
+.trust-line--plans { margin-bottom: 34px; }
+@media (max-width: 600px) {
+  .trust-line { flex-direction: column; gap: 3px; padding: 12px 22px; border-radius: var(--radius-m); font-size: 14.5px; }
+  .trust-line li + li::before { content: none; }
+}

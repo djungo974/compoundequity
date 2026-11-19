@@ -72,11 +72,16 @@
              do. Its words are there at once: no fade-in, no moving word. Only the film moves. -->
         <div class="eyebrow">For investors in uranium, critical minerals and defense</div>
         <h1>What mattered this week in uranium, critical minerals and defense, <em>explained in 10 minutes.</em></h1>
-        <p class="hero-sub">We read the filings, contract awards, licensing decisions and policy moves so you don't have to. Every Sunday you read the signals that mattered — explained simply, with their sources. No email, no inbox clutter: it arrives in Telegram.</p>
+        <p class="hero-sub">We read the official notices and the specialist press on contracts, licensing and policy, so you don't have to. Every Sunday you read the signals that mattered — explained simply, with their sources. No email, no inbox clutter: it arrives in Telegram.</p>
         <div class="hero-cta">
           <a href="https://t.me/MetalsMachinesBot" data-bot-link class="btn btn-primary" data-magnetic>Join free on Telegram</a>
           <a href="#plans" class="text-link">Compare free and Pro →</a>
         </div>
+        <ul class="trust-line" aria-label="What you can count on">
+          <li>No buy or sell calls</li>
+          <li>Secure Stripe checkout</li>
+          <li><a href="refund.html">14-day refund</a></li>
+        </ul>
         <div class="film-hint" aria-hidden="true">Scroll to play the film</div>
       </div>
 
@@ -92,7 +97,7 @@
         <div class="film-beat-inner">
           <span class="film-kicker">02 · Energy</span>
           <h2>Uranium and nuclear fuel</h2>
-          <p>Enrichment, reactor licensing and fuel contracts, read at the source: NRC, DOE and IAEA notices.</p>
+          <p>Enrichment, reactor licensing and fuel contracts, from NRC and IAEA notices and the nuclear trade press.</p>
           <small>File footage: the eastern United States at night, from the International Space Station, NASA</small>
         </div>
       </div>
@@ -114,18 +119,31 @@
   </section>
   <span id="after-film"></span>
 
-  <!-- SOURCES: only feeds the collectors really read (see docs/n8n-radar-engine.md, "Sources") -->
-  <div class="source-strip" aria-label="Sources we read every week">
+  <!-- SOURCES: only feeds the collectors really read. Official and press are kept apart on purpose (2026-11-18): over
+       the last 60 days most stories scored 3 or more came from the specialist press, so this page must never say
+       that everything comes from official sites. -->
+  <section class="source-strip" aria-labelledby="sources-title">
     <div class="container source-strip-inner">
-      <span class="source-strip-label">We read every week</span>
-      <div class="source-strip-viewport">
-        <div class="source-strip-track">
-          <ul><li>Federal Register</li><li>NRC notices</li><li>DOE notices</li><li>DoD notices</li><li>IAEA press alerts</li><li>World Nuclear News</li><li>Mining Weekly</li><li>Defense One</li><li>Breaking Defense</li></ul>
-          <ul aria-hidden="true"><li>Federal Register</li><li>NRC notices</li><li>DOE notices</li><li>DoD notices</li><li>IAEA press alerts</li><li>World Nuclear News</li><li>Mining Weekly</li><li>Defense One</li><li>Breaking Defense</li></ul>
-        </div>
+      <div class="source-strip-lead">
+        <h2 id="sources-title">Where the facts come from</h2>
+        <p>Official publications and the specialist press. Never social media.</p>
       </div>
+      <dl class="source-groups">
+        <div>
+          <dt>Official sources</dt>
+          <dd>NRC, DOE and DoD notices in the Federal Register</dd>
+          <dd>IAEA press alerts</dd>
+        </div>
+        <div>
+          <dt>Specialist press</dt>
+          <dd>World Nuclear News</dd>
+          <dd>Mining Weekly</dd>
+          <dd>Defense One</dd>
+          <dd>Breaking Defense</dd>
+        </div>
+      </dl>
     </div>
-  </div>
+  </section>
 
   <!-- WHAT ARRIVES: the latest free issue really sent to the public channel, as it looks in Telegram (founder,
        2026-11-16: a real issue, not a sample). The HTML below is the issue of 8 November 2026, word for word;
@@ -207,6 +225,11 @@
         <h2>Start free. Go Pro when it's worth it.</h2>
         <p>Both channels get each issue at the same moment, every Sunday at 9:00 AM ET. The difference is depth, not delay.</p>
       </div>
+      <ul class="trust-line trust-line--plans" aria-label="What you can count on">
+        <li>No buy or sell calls</li>
+        <li>Secure Stripe checkout</li>
+        <li><a href="refund.html">14-day refund</a></li>
+      </ul>
       <div class="pricing-grid">
         <div class="plan" data-reveal data-reveal-delay="1">
           <div class="plan-name">Free</div>
@@ -225,7 +248,7 @@
         <div class="plan" data-reveal data-reveal-delay="2">
           <div class="plan-name">Pro monthly</div>
           <h3>The full issue</h3>
-          <div class="plan-price">$14.99<span> / month</span></div>
+          <div class="plan-price">$19<span> / month</span></div>
           <p class="plan-alt">Cancel anytime</p>
           <p class="plan-desc">The full Sunday issue, the alerts and a monthly recap, in a private Telegram channel.</p>
           <ul class="plan-features">
@@ -239,15 +262,15 @@
         </div>
 
         <div class="plan featured" data-reveal data-reveal-delay="3">
-          <div class="plan-badge">Save 33%</div>
+          <div class="plan-badge">2 months free</div>
           <div class="plan-name">Pro annual</div>
           <h3>The full issue</h3>
-          <div class="plan-price">$120<span> / year</span></div>
-          <p class="plan-alt">Billed once a year — $10 a month</p>
-          <p class="plan-desc">Everything in Pro monthly, for a third less.</p>
+          <div class="plan-price">$190<span> / year</span></div>
+          <p class="plan-alt">Billed once a year — $15.83 a month</p>
+          <p class="plan-desc">Everything in Pro monthly, with 2 months free.</p>
           <ul class="plan-features">
             <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg>Everything in Pro monthly</li>
-            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg>Save $59.88 a year compared with paying monthly</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg>Save $38 a year compared with paying monthly</li>
             <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg>Cancel anytime; access runs to the end of your year</li>
           </ul>
           <a href="https://t.me/MetalsMachinesBot" data-bot-link data-pay="annual" class="btn btn-primary btn-block">Go Pro — annual</a>
