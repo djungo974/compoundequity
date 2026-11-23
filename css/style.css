@@ -498,6 +498,17 @@ section { position: relative; }
 .legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 18px; font-size: 13px; color: var(--text-faint); }
 .legend span { display: inline-flex; align-items: center; gap: 8px; }
 .legend i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+/* Track record rows (2026-11-22): a source link per signal, where it was published, and its status. */
+.table td a { color: var(--text); border-bottom: 1px solid var(--line-strong); }
+.table td a:hover { border-color: var(--text); }
+.table td small { display: block; margin-top: 4px; font-size: 12px; color: var(--text-faint); }
+.status { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; color: var(--text); }
+.status i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.status-pending i { background: var(--accent); }
+.status-confirmed i { background: var(--ok); }
+.status-faded i { background: var(--text-faint); }
+.status-correction i { background: var(--bad); }
+.tr-updated { margin-top: 14px; font-size: 13.5px; color: var(--text-faint); }
 
 /* ---------- Legal / prose ---------- */
 .prose { max-width: 760px; }
