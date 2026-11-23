@@ -16,6 +16,7 @@
     testimonials: [],
   };
   const REF_RE = /^[A-HJ-NP-Z2-9]{6}$/;
+  const EMAIL_RELAY = "https://subscribe.metalsandmachines.com";
 
   // Animations on or off (the "Animations" switch in the nav; founder, 2026-11-13: some visitors are sensitive to
   // movement and flicker). The visitor's choice is kept in this browser ("mm-motion"); without one the site follows
@@ -747,7 +748,82 @@
     initAlertDemo();
     initHeroFilm();
     initIssues();
+    initEmailSignup();
+    initConfirmEmail();
     initWelcome();
     markActiveNav();
   });
+
+  // Free issue by email (founder, 2026-11-23). The form posts to subscribe.metalsandmachines.com, a relay that passes
+  // it to our automation server; a confirmation email follows, and nothing is sent until the reader clicks it.
+  function relayPost(path, body) {
+    // Never wait forever: after 15 seconds the reader is told to try again.
+    const ctrl = typeof AbortController === "function" ? new AbortController() : null;
+    const timer = ctrl ? setTimeout(() => ctrl.abort(), 15000) : null;
+    return fetch(EMAIL_RELAY + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: ctrl ? ctrl.signal : undefined })
+      .then((r) => r.json())
+      .finally(() => { if (timer) clearTimeout(timer); });
+  }
+
+  function initEmailSignup() {
+    document.querySelectorAll("[data-email-signup]").forEach((box) => {
+      const toggle = box.querySelector("[data-email-toggle]");
+      const form = box.querySelector("[data-email-form]");
+      const done = box.querySelector("[data-email-done]");
+      const msg = box.querySelector("[data-email-msg]");
+      const input = form.querySelector('input[name="email"]');
+      const button = form.querySelector('button[type="submit"]');
+      const say = (text, isError) => { msg.textContent = text; msg.className = "email-msg" + (isError ? " is-error" : ""); };
+      toggle.addEventListener("click", () => {
+        const open = form.hidden;
+        form.hidden = !open;
+        toggle.setAttribute("aria-expanded", String(open));
+        if (open) input.focus();
+      });
+      input.addEventListener("input", () => { if (msg.classList.contains("is-error")) say("", false); });
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const email = input.value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { say("Enter a valid email address.", true); input.focus(); return; }
+        button.disabled = true;
+        say("Sending…", false);
+        relayPost("/signup", { email, website: form.elements.website ? form.elements.website.value : "" })
+          .then((a) => {
+            if (a && a.ok) { form.hidden = true; toggle.hidden = true; done.hidden = false; done.focus(); return; }
+            say((a && a.error) || "Something went wrong. Please try again later.", true);
+            button.disabled = false;
+          })
+          .catch(() => { say("We couldn't reach our server. Please try again in a moment.", true); button.disabled = false; });
+      });
+    });
+  }
+
+  // confirm-email.html: the link in the confirmation email opens this page; the reader's click confirms (mail scanners
+  // that open links on their own never press the button).
+  function initConfirmEmail() {
+    const box = document.querySelector("[data-confirm-email]");
+    if (!box) return;
+    const show = (name) => box.querySelectorAll("[data-state]").forEach((el) => { el.hidden = el.getAttribute("data-state") !== name; });
+    const token = (new URLSearchParams(location.search).get("t") || "").replace(/[^0-9a-fA-F-]/g, "").slice(0, 36);
+    if (!token) { show("missing"); return; }
+    show("ask");
+    const button = box.querySelector("[data-confirm-button]");
+    const error = box.querySelector("[data-confirm-error]");
+    button.addEventListener("click", () => {
+      button.disabled = true;
+      error.textContent = "";
+      relayPost("/confirm", { token })
+        .then((a) => {
+          if (a && a.ok) {
+            show(a.status === "already" ? "already" : "subscribed");
+            try { history.replaceState(null, "", location.pathname); } catch (e) { /* the address keeps the token */ }
+            return;
+          }
+          if (a && a.status === "expired") { show("expired"); return; }
+          error.textContent = (a && a.error) || "Something went wrong. Please try again in a few minutes.";
+          button.disabled = false;
+        })
+        .catch(() => { error.textContent = "We couldn't reach our server. Please try again in a moment."; button.disabled = false; });
+    });
+  }
 })();
