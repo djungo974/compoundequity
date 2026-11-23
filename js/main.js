@@ -448,6 +448,66 @@
       .catch(() => { /* the page keeps the issue written in its HTML */ });
   }
 
+  // Pro alerts (founder, 2026-11-22): the next check in New York time, and an example alert that arrives when the
+  // section comes into view (notification, then the text typed). Without animations everything is shown as written.
+  // The text is in the HTML; the script only hides and retypes it.
+  function nextCheckText() {
+    const parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
+      .formatToParts(new Date()).map((p) => [p.type, p.value]));
+    const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(parts.weekday);
+    const names = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const now = Number(parts.hour) * 60 + Number(parts.minute);
+    if (day < 0) return "7:30 AM or 5:30 PM New York time";
+    for (let k = 0; k < 8; k++) {
+      const d = (day + k) % 7;
+      if (d === 0) continue; // Monday to Saturday only
+      for (const slot of [450, 1050]) {
+        if (k === 0 && slot <= now) continue;
+        const time = slot === 450 ? "7:30 AM" : "5:30 PM";
+        return (k === 0 ? "today, " : k === 1 ? "tomorrow, " : names[d] + ", ") + time + " New York time";
+      }
+    }
+    return "7:30 AM or 5:30 PM New York time";
+  }
+
+  function initAlertDemo() {
+    const next = document.querySelector("[data-next-check]");
+    if (next) next.textContent = "Next check: " + nextCheckText();
+    const box = document.querySelector("[data-alert-demo]");
+    if (!box || motionOff() || !("IntersectionObserver" in window)) return;
+    const paras = Array.from(box.querySelectorAll("[data-type]"));
+    const nodes = paras.map((p) => (p.lastChild && p.lastChild.nodeType === 3 ? p.lastChild : null));
+    const full = nodes.map((n) => (n ? n.textContent : ""));
+    const finish = () => {
+      nodes.forEach((n, i) => { if (n) n.textContent = full[i]; });
+      paras.forEach((p) => p.classList.remove("typing"));
+      box.classList.remove("is-waiting");
+      box.classList.add("is-live");
+    };
+    box.classList.add("is-waiting");
+    nodes.forEach((n) => { if (n) n.textContent = ""; });
+    document.addEventListener("mm:motion", () => { if (motionOff()) finish(); });
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      box.classList.remove("is-waiting");
+      box.classList.add("is-live");
+      let i = 0, c = 0;
+      const step = () => {
+        if (motionOff()) { finish(); return; }
+        if (i >= nodes.length) return;
+        if (!nodes[i]) { i++; step(); return; }
+        paras[i].classList.add("typing");
+        c += 2;
+        nodes[i].textContent = full[i].slice(0, c);
+        if (c >= full[i].length) { paras[i].classList.remove("typing"); i++; c = 0; setTimeout(step, 260); }
+        else setTimeout(step, 18);
+      };
+      setTimeout(step, 1400);
+    }, { threshold: 0.35 });
+    io.observe(box);
+  }
+
   // How it works: the three steps of the circuit light up one after the other when it comes into view.
   function initCircuit() {
     const circuit = document.querySelector("[data-circuit]");
@@ -655,6 +715,7 @@
     initSpotlight();
     initPhoneTilt();
     initCircuit();
+    initAlertDemo();
     initHeroFilm();
     initIssues();
     initWelcome();
