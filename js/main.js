@@ -411,10 +411,38 @@
       if (note) note.textContent = "Sent to the free channel on " + when(issue.date, { weekday: "long", month: "long", day: "numeric", year: "numeric" }) + ", exactly as shown.";
     }
 
-    function renderArchive(issues) {
+    // The page of an issue (issues/<slug>.html, written by tools/build-issue-pages.mjs), when it has one.
+    const pageOf = (issue) => (issue.page && /^[a-z0-9-]+$/.test(issue.page.slug || "") ? "issues/" + issue.page.slug + ".html" : null);
+    const link = (href, text, cls) => { const a = el("a", cls || "", text); a.href = href; return a; };
+    const CARD_LIMIT = 12; // about three months as full cards; older issues as one line each, by month
+
+    function renderOlder(older) {
+      let box = document.querySelector("[data-archive-older]");
+      if (!older.length) { if (box) box.remove(); return; }
+      if (!box) { box = el("section", "issue-older"); box.setAttribute("data-archive-older", ""); list.after(box); }
+      const parts = [el("h2", "", "Earlier issues")];
+      let month = "", ul = null;
+      older.forEach((issue) => {
+        const m = when(issue.date, { month: "long", year: "numeric" });
+        if (m !== month) { month = m; ul = el("ul"); parts.push(el("h3", "", m), ul); }
+        const text = "Weekly #" + issue.no + " · " + when(issue.date, { month: "short", day: "numeric" }) + " — " + issue.title;
+        const li = el("li");
+        const href = pageOf(issue);
+        li.appendChild(href ? link(href, text) : el("span", "", text));
+        ul.appendChild(li);
+      });
+      box.replaceChildren(...parts);
+    }
+
+    function renderArchive(all) {
+      const issues = all.slice(0, CARD_LIMIT);
+      renderOlder(all.slice(CARD_LIMIT));
       list.replaceChildren(...issues.map((issue) => {
         const card = el("article", "issue-card");
-        card.append(el("p", "issue-meta", when(issue.date, { weekday: "long", month: "long", day: "numeric", year: "numeric" }) + (issue.no ? " · Weekly #" + issue.no : "")), el("h2", "", issue.title));
+        const href = pageOf(issue);
+        const h2 = el("h2");
+        h2.appendChild(href ? link(href, issue.title) : document.createTextNode(issue.title));
+        card.append(el("p", "issue-meta", when(issue.date, { weekday: "long", month: "long", day: "numeric", year: "numeric" }) + (issue.no ? " · Weekly #" + issue.no : "")), h2);
         const img = photoOf(issue);
         if (img) {
           const fig = el("figure", "issue-photo");
@@ -431,6 +459,7 @@
         ul.append(...issue.lines.map((l) => line("li", l)));
         card.append(el("h3", "", "The week in 60 seconds"), ul);
         if (issue.pro) { const p = el("p", "issue-pro"); p.append(el("b", "", "In Pro that week: "), issue.pro); card.appendChild(p); }
+        if (href) card.appendChild(link(href, "Read the issue, with a preview of the Pro part →", "issue-open"));
         return card;
       }));
     }

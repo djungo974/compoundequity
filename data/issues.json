@@ -1,5 +1,5 @@
 {
-  "note": "Every free issue really sent to the public Telegram channel, newest first, copied word for word from what the Issue Desk sent. Nothing here is a sample. The home page shows the first entry; archive.html shows them all.",
+  "note": "Every issue really sent, newest first. The free part (title, photo, lines, Pro teaser) is copied word for word from what the Issue Desk sent to the public channel. \"page\" holds only a preview of the Pro part, taken from the Pro messages by tools/issue-from-sent.mjs: each deep dive's heading, the first two sentences of \"What happened\" and its sources, plus counts of what stays locked. Nothing here is a sample. The home page shows the first entry; archive.html lists them all; tools/build-issue-pages.mjs writes issues/<slug>.html.",
   "issues": [
     {
       "no": 2,
@@ -14,11 +14,83 @@
         "link": "https://commons.wikimedia.org/wiki/File:Gas_centrifuge_cascade.jpg"
       },
       "lines": [
-        { "sector": "Uranium", "mark": "🟢", "text": "Urenco and Blykalla signed a HALEU enrichment agreement for Blykalla's first SEALER reactor, with deliveries expected in the early 2030s." },
-        { "sector": "Mining", "mark": "🟠", "text": "Zimbabwe will tax lithium concentrate exports on the value of the lithium sulphate it could produce, not the concentrate's selling price." },
-        { "sector": "Defense & AI", "mark": "🟣", "text": "Senate appropriators put nearly $9.4 billion for Golden Dome in a draft defense bill, well below the $17.5 billion request." }
+        {
+          "sector": "Uranium",
+          "mark": "🟢",
+          "text": "Urenco and Blykalla signed a HALEU enrichment agreement for Blykalla's first SEALER reactor, with deliveries expected in the early 2030s."
+        },
+        {
+          "sector": "Mining",
+          "mark": "🟠",
+          "text": "Zimbabwe will tax lithium concentrate exports on the value of the lithium sulphate it could produce, not the concentrate's selling price."
+        },
+        {
+          "sector": "Defense & AI",
+          "mark": "🟣",
+          "text": "Senate appropriators put nearly $9.4 billion for Golden Dome in a draft defense bill, well below the $17.5 billion request."
+        }
       ],
-      "pro": "This week's Pro deep dives cover the HALEU supply chain, Zimbabwe's lithium export tax and the fight over defense reconciliation money."
+      "pro": "This week's Pro deep dives cover the HALEU supply chain, Zimbabwe's lithium export tax and the fight over defense reconciliation money.",
+      "page": {
+        "slug": "weekly-2",
+        "legend": "🔴 major · 🟠 important · 🟡 worth knowing · ⚪ background",
+        "deepDives": [
+          {
+            "marks": "🟠 ⚛️",
+            "sector": "Uranium",
+            "title": "Urenco and Blykalla sign HALEU enrichment deal",
+            "excerpt": "Urenco and Blykalla signed an agreement under which uranium feed supplied by Blykalla will be enriched at Urenco's HALEU facility at Capenhurst in the UK. The fuel will be used for Blykalla's first SEALER unit in the USA.",
+            "more": true,
+            "sources": [
+              {
+                "title": "Urenco, Blykalla sign HALEU deal",
+                "url": "https://www.world-nuclear-news.org/articles/urenco-blykalla-sign-haleu-deal"
+              }
+            ]
+          },
+          {
+            "marks": "🟠 ⛏️",
+            "sector": "Mining",
+            "title": "Zimbabwe changes how it taxes lithium exports",
+            "excerpt": "Zimbabwe will tax lithium concentrate exports based on the value of the lithium sulphate that could be produced from them, not the concentrate's selling price. Finance Minister Mthuli Ncube said benchmark-grade 6% lithium concentrate will be converted at a ratio of five metric tons of concentrate to one ton of lithium sulphate for export tax purposes.",
+            "more": true,
+            "sources": [
+              {
+                "title": "Zimbabwe tweaks lithium export tax rule, mandates local sourcing by miners",
+                "url": "https://www.miningweekly.com/article/zimbabwe-tweaks-lithium-export-tax-rule-mandates-local-sourcing-by-miners-2026-11-20"
+              }
+            ]
+          },
+          {
+            "marks": "🟠 🛡️",
+            "sector": "Defense & AI",
+            "title": "Golden Dome funding cut in Senate draft bill",
+            "excerpt": "Senate appropriators pushed roughly half of the administration's $17 billion-plus Golden Dome request into a draft defense bill. The nearly $1.1 trillion proposal from the GOP-led Senate Appropriations Committee tagged nearly $9.4 billion for Golden Dome in its fiscal 2027 defense draft.",
+            "more": true,
+            "sources": [
+              {
+                "title": "Appropriators slash Trump’s $17B Golden Dome request in draft bill",
+                "url": "https://www.defenseone.com/policy/2026/11/appropriators-slash-trumps-17b-golden-dome-request-draft-bill/417326/"
+              },
+              {
+                "title": "$350 billion reconciliation bill ‘not going to happen’: HASC chair",
+                "url": "https://breakingdefense.com/2026/11/350-billion-reconciliation-bill-not-going-to-happen-hasc-chair/"
+              }
+            ]
+          }
+        ],
+        "locked": {
+          "analysis": 3,
+          "watchlist": 12,
+          "calendar": 1,
+          "oneThingToRead": true
+        },
+        "disclosure": [
+          "The watchlist is built from the largest holdings of three reference ETFs: the VanEck Uranium and Nuclear ETF (NLR), the Sprott Critical Materials ETF (SETM) and the Global X Defense Tech ETF (SHLD). The author holds European-listed ETFs in these three sectors and may therefore indirectly own some of the companies mentioned; see our Disclosure policy.",
+          "Sources: official publications (U.S. government agencies, regulators, the IAEA) and the specialist press, never social media. Every item links to its source, and software checks each figure and quote against it.",
+          "Metals & Machines publishes general research for informational purposes only. This is not personalized investment advice. Do your own research and consult a licensed advisor before making investment decisions."
+        ]
+      }
     },
     {
       "no": 1,
@@ -33,11 +105,94 @@
         "link": "https://commons.wikimedia.org/wiki/File:Beaver_Valley_Nuclear_Power_Plant.jpg"
       },
       "lines": [
-        { "sector": "Uranium", "mark": "🟢", "text": "The US Department of Energy's ARPA-E HORNIG programme awarded funding to Westinghouse, Texas A&M, Standard Nuclear, Oregon State University, Oklo and Exodys Energy for projects that recycle transuranic elements from used fuel into fuel for advanced reactors." },
-        { "sector": "Mining", "mark": "🟠", "text": "Copper markets are waiting on a US tariff decision, while Grindrod ran its first private test train to Komatipoort and Ivanhoe posted a profitable quarter on record Kamoa-Kakula revenue." },
-        { "sector": "Defense & AI", "mark": "🟣", "text": "Half of the US Navy's Japan-based destroyers and the carrier George Washington are deployed to Central Command for the war on Iran, pulling assets from the Pacific." }
+        {
+          "sector": "Uranium",
+          "mark": "🟢",
+          "text": "The US Department of Energy's ARPA-E HORNIG programme awarded funding to Westinghouse, Texas A&M, Standard Nuclear, Oregon State University, Oklo and Exodys Energy for projects that recycle transuranic elements from used fuel into fuel for advanced reactors."
+        },
+        {
+          "sector": "Mining",
+          "mark": "🟠",
+          "text": "Copper markets are waiting on a US tariff decision, while Grindrod ran its first private test train to Komatipoort and Ivanhoe posted a profitable quarter on record Kamoa-Kakula revenue."
+        },
+        {
+          "sector": "Defense & AI",
+          "mark": "🟣",
+          "text": "Half of the US Navy's Japan-based destroyers and the carrier George Washington are deployed to Central Command for the war on Iran, pulling assets from the Pacific."
+        }
       ],
-      "pro": "This week's Pro deep dives cover the HORNIG fuel awards, the copper tariff wait and the Pacific naval drawdown."
+      "pro": "This week's Pro deep dives cover the HORNIG fuel awards, the copper tariff wait and the Pacific naval drawdown.",
+      "page": {
+        "slug": "weekly-1",
+        "legend": null,
+        "deepDives": [
+          {
+            "marks": "🟢",
+            "sector": "Uranium",
+            "title": "US funds projects to recycle used fuel into advanced reactor fuel",
+            "excerpt": "The US Department of Energy's Advanced Research Projects Agency-Energy runs a programme called HORNIG, which opened for applications in April. It funds work to recycle transuranic elements from used nuclear fuel into fuel for advanced reactors.",
+            "more": true,
+            "sources": [
+              {
+                "title": "Next-generation fuel projects get US federal funding",
+                "url": "https://www.world-nuclear-news.org/articles/next-generation-fuel-projects-get-us-federal-funding"
+              }
+            ]
+          },
+          {
+            "marks": "🟠",
+            "sector": "Mining",
+            "title": "Copper trade waits on a US tariff decision",
+            "excerpt": "BMI reports that the global copper market is awaiting a US tariff decision. Separately, Grindrod ran its first test train to Komatipoort as a private train operating company, with operations to start in 2027.",
+            "more": true,
+            "sources": [
+              {
+                "title": "Global copper market awaits US tariff decision, BMI reports",
+                "url": "https://www.miningweekly.com/article/global-copper-market-awaits-us-tariff-decision-bmi-reports-2026-11-06"
+              },
+              {
+                "title": "First test train to Komatipoort a success, operations to start in 2027, says new Grindrod Rail boss",
+                "url": "https://www.miningweekly.com/article/first-test-train-to-komatipoort-a-success-operations-to-start-in-2027-says-new-grindrod-rail-boss-2026-11-06"
+              },
+              {
+                "title": "Ivanhoe records profitable third quarter, boosted by record revenue at Kamoa-Kakula",
+                "url": "https://www.miningweekly.com/article/ivanhoe-records-profitable-third-quarter-boosted-by-record-revenue-at-kamoa-kakula-2026-11-05"
+              },
+              {
+                "title": "Caledonia secures $150m bridge facility for Zimbabwe's biggest gold project",
+                "url": "https://www.miningweekly.com/article/caledonia-secures-150m-bridge-facility-for-zimbabwes-biggest-gold-project-2026-11-05"
+              },
+              {
+                "title": "In rail reform milestone, Grindrod becomes first private TOC to run test train",
+                "url": "https://www.miningweekly.com/article/in-rail-reform-milestone-grindrod-becomes-first-private-toc-to-run-test-train-2026-11-03"
+              }
+            ]
+          },
+          {
+            "marks": "🟣",
+            "sector": "Defense & AI",
+            "title": "Iran war pulls US destroyers from the western Pacific",
+            "excerpt": "Five of the 10 destroyers homeported in Yokosuka, along with the carrier George Washington, are deployed to US Central Command's area of responsibility for the war on Iran. Navy officials have told crews of at least some of those destroyers they won't return home until 2027.",
+            "more": true,
+            "sources": [
+              {
+                "title": "The war on Iran is stripping the western Pacific of US naval forces",
+                "url": "https://www.defenseone.com/threats/2026/11/war-iran-stripping-western-pacific-us-naval-forces/417079/"
+              }
+            ]
+          }
+        ],
+        "locked": {
+          "analysis": 3,
+          "watchlist": 12,
+          "calendar": 1,
+          "oneThingToRead": true
+        },
+        "disclosure": [
+          "The watchlist is built from the largest holdings of three reference ETFs: the VanEck Uranium and Nuclear ETF (NLR), the Sprott Critical Materials ETF (SETM) and the Global X Defense Tech ETF (SHLD). The author holds European-listed ETFs in these three sectors and may therefore indirectly own some of the companies mentioned; see our Disclosure policy.",
+          "Metals & Machines publishes general research for informational purposes only. This is not personalized investment advice. Do your own research and consult a licensed advisor before making investment decisions."
+        ]
+      }
     }
   ]
 }
