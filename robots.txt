@@ -1,4 +1,4 @@
 User-agent: *
-Disallow: /welcome.html
+Allow: /
 
 Sitemap: https://metalsandmachines.com/sitemap.xml
