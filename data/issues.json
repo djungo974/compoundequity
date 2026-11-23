@@ -2,6 +2,25 @@
   "note": "Every free issue really sent to the public Telegram channel, newest first, copied word for word from what the Issue Desk sent. Nothing here is a sample. The home page shows the first entry; archive.html shows them all.",
   "issues": [
     {
+      "no": 2,
+      "date": "2026-11-22",
+      "time": "09:00",
+      "title": "HALEU deal signed as defense funding shrinks",
+      "photo": {
+        "src": "assets/img/issues/2026-11-22.jpg",
+        "alt": "Gas centrifuges used to enrich uranium",
+        "caption": "File photo: Gas centrifuges used to enrich uranium.",
+        "credit": "U.S. Department of Energy, public domain",
+        "link": "https://commons.wikimedia.org/wiki/File:Gas_centrifuge_cascade.jpg"
+      },
+      "lines": [
+        { "sector": "Uranium", "mark": "🟢", "text": "Urenco and Blykalla signed a HALEU enrichment agreement for Blykalla's first SEALER reactor, with deliveries expected in the early 2030s." },
+        { "sector": "Mining", "mark": "🟠", "text": "Zimbabwe will tax lithium concentrate exports on the value of the lithium sulphate it could produce, not the concentrate's selling price." },
+        { "sector": "Defense & AI", "mark": "🟣", "text": "Senate appropriators put nearly $9.4 billion for Golden Dome in a draft defense bill, well below the $17.5 billion request." }
+      ],
+      "pro": "This week's Pro deep dives cover the HALEU supply chain, Zimbabwe's lithium export tax and the fight over defense reconciliation money."
+    },
+    {
       "no": 1,
       "date": "2026-11-08",
       "time": "08:00",
