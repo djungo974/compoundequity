@@ -1063,8 +1063,21 @@ html { scrollbar-width: thin; scrollbar-color: var(--line-strong) var(--bg); }
 
 /* ---------- Free issue by email (founder, 2026-11-23): a quiet link under the Telegram button; the form opens on click ---------- */
 .email-signup { margin-top: 14px; max-width: 460px; }
-.email-toggle { display: inline-flex; align-items: center; gap: 8px; padding: 0; background: none; border: 0; color: var(--accent-soft); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; text-align: left; border-bottom: 1px solid transparent; transition: border-color .25s var(--ease); }
-.email-toggle:hover, .email-toggle[aria-expanded="true"] { border-color: currentColor; }
+/* A secondary button in relief (founder, 2026-11-25: "more visible"): a glassy pill with a light rim, a highlight on
+   top and a soft shadow, lifting a little under the pointer. It stays outlined, never filled, so the blue Telegram
+   button is still the first thing to click. */
+.email-toggle {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px; padding: 10px 18px; border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--line-strong));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 16%, transparent), color-mix(in srgb, var(--accent) 5%, transparent)), var(--surface);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), 0 8px 20px -12px var(--shadow-deep);
+  color: var(--text); font: inherit; font-size: 14px; font-weight: 600; line-height: 1.2; cursor: pointer; text-align: center;
+  transition: transform .25s var(--ease), border-color .25s var(--ease), box-shadow .25s var(--ease);
+}
+.email-toggle .email-ico { color: var(--accent-soft); }
+.email-toggle:hover { transform: translateY(-1px); border-color: var(--accent); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), 0 12px 24px -12px var(--shadow-deep), 0 0 0 3px var(--accent-tint); }
+.email-toggle[aria-expanded="true"] { border-color: var(--accent); }
+.email-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .email-ico { width: 17px; height: 17px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linejoin: round; }
 .email-form { margin-top: 12px; }
 .email-row { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -1079,7 +1092,7 @@ html { scrollbar-width: thin; scrollbar-color: var(--line-strong) var(--bg); }
 .email-done p { font-size: 14px; color: var(--text-soft); line-height: 1.5; }
 .email-done .email-done-title { font-weight: 700; color: var(--text); margin-bottom: 4px; }
 .email-signup--plan { margin-top: 14px; max-width: none; text-align: center; }
-.email-signup--plan .email-toggle { font-size: 13.5px; }
+.email-signup--plan .email-toggle { width: 100%; font-size: 13.5px; }
 .email-signup--plan .email-form, .email-signup--plan .email-done { text-align: left; }
 /* Photo sections stay dark in both themes: the field follows them. */
 .section-photo { --input-bg: rgba(15, 19, 23, 0.6); }
@@ -1088,7 +1101,15 @@ html { scrollbar-width: thin; scrollbar-color: var(--line-strong) var(--bg); }
 .film-copy .email-row { justify-content: center; }
 .film-copy .email-done { text-align: left; }
 /* Over the film the page stays dark in both themes, so the link and the field use light colours there. */
-.film-copy .email-toggle { color: #CFE0F4; }
+.film-copy .email-toggle {
+  color: #fff; border-color: rgba(207, 224, 244, .55);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .18), rgba(255, 255, 255, .05)), rgba(8, 11, 14, .55);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 10px 24px -10px rgba(0, 0, 0, .8);
+}
+.film-copy .email-toggle .email-ico { color: #CFE0F4; }
+.film-copy .email-toggle:hover { border-color: #CFE0F4; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .4), 0 14px 28px -10px rgba(0, 0, 0, .85), 0 0 0 3px rgba(207, 224, 244, .16); }
+@media (prefers-reduced-motion: reduce) { .email-toggle, .email-toggle:hover { transition: none; transform: none; } }
 .film-copy .email-row input { background: rgba(8, 11, 14, .62); border-color: rgba(255, 255, 255, .3); color: #fff; }
 .film-copy .email-row input::placeholder { color: rgba(255, 255, 255, .55); }
 .film-copy .email-fine, .film-copy .email-msg { color: rgba(255, 255, 255, .78); }
