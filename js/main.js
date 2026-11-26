@@ -299,6 +299,9 @@
     }
     // 01 Metals: sparks fly up from the fire, the nearest plane, rising faster than the film as the page scrolls.
     function sparks(local, t) {
+      // Not over the first screen's words: the sparks come in once the headline has gone.
+      const show = Math.min(1, Math.max(0, (local * share - INTRO_END) / 0.03));
+      if (!show) return;
       const W = canvas.width, H = canvas.height, lift = -local * 0.18 * H;
       ctx.save();
       ctx.globalCompositeOperation = "lighter";
@@ -310,7 +313,7 @@
         const vx = (r3 - 0.5) * 0.26 * W, vy = -(0.25 + r1 * 0.5) * H;
         const x = W * (0.5 + (r2 - 0.5) * 0.12) + vx * age;
         const y = H * 0.74 + vy * age + 0.35 * H * age * age + lift;
-        const fade = (1 - a) * Math.min(1, a * 8);
+        const fade = show * (1 - a) * Math.min(1, a * 8);
         const tx = x - vx * 0.045, ty = y - (vy + 0.7 * H * age) * 0.045;
         // A wide orange glow under a thin white-hot core.
         ctx.strokeStyle = "rgba(255, 120, 30, " + (0.45 * fade).toFixed(3) + ")";
@@ -458,20 +461,30 @@
       requestAnimationFrame(loop);
     }
     // Each act's title comes in word by word, from blurred and tilted to sharp (style.css, .film-word).
+    // Words inside an <em> (the act's key words, in its sector's colour) stay inside it.
     beats.forEach((b) => {
       const h = b.querySelector("h2");
       if (!h || h.dataset.split) return;
-      const words = h.textContent.trim().split(/\s+/);
       h.dataset.split = "1";
-      h.setAttribute("aria-label", words.join(" "));
-      h.textContent = "";
-      words.forEach((w, n) => {
+      h.setAttribute("aria-label", h.textContent.trim().replace(/\s+/g, " "));
+      let n = 0;
+      const addWords = (text, parent) => text.split(/(\s+)/).forEach((part) => {
+        if (!part) return;
+        if (/^\s+$/.test(part)) { parent.append(" "); return; }
         const s = document.createElement("span");
         s.className = "film-word";
         s.setAttribute("aria-hidden", "true");
-        s.style.setProperty("--i", n);
-        s.textContent = w;
-        h.append(s, n < words.length - 1 ? " " : "");
+        s.style.setProperty("--i", n++);
+        s.textContent = part;
+        parent.append(s);
+      });
+      const nodes = Array.from(h.childNodes);
+      h.textContent = "";
+      nodes.forEach((node) => {
+        if (node.nodeType === 3) { addWords(node.textContent, h); return; }
+        const box = node.cloneNode(false);
+        h.append(box);
+        addWords(node.textContent, box);
       });
     });
 
