@@ -974,11 +974,11 @@ h2 em { font-style: italic; color: var(--accent-soft); }
 .film-beat.is-on .film-word { opacity: 1; filter: none; transform: none; }
 .film-beat p, .film-beat small { opacity: 0; transform: translateY(10px); transition: opacity .6s ease .45s, transform .7s var(--ease) .45s; }
 .film-beat.is-on p, .film-beat.is-on small { opacity: 1; transform: none; }
-/* Each act in its sector's colour, as in the issues (gold metals, green uranium, violet defense): the number, the
+/* Each act in its own colour (gold metals, green uranium, taupe grey defense, founder 2026-11-26): the number, the
    key words of the title in italics, with a soft glow, and the key words of the sentence. */
 .film-beat--metals { --sector-c: #F2B84B; }
 .film-beat--energy { --sector-c: #C6E37A; }
-.film-beat--machines { --sector-c: #C3B1F2; }
+.film-beat--machines { --sector-c: #C8BCB0; }
 .film-beat .film-kicker { color: var(--sector-c, var(--text-soft)); }
 .film-beat h2 em { font-style: italic; color: var(--sector-c); text-shadow: 0 0 26px color-mix(in srgb, var(--sector-c) 45%, transparent), 0 2px 22px rgba(0, 0, 0, .6); }
 .film-beat p strong { color: var(--sector-c); font-weight: 600; }
