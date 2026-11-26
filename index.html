@@ -61,12 +61,13 @@
 </div>
 
 <main>
-  <!-- HERO: a film that plays as you scroll. Three public-domain clips, each cut into frames that main.js draws on
-       a canvas (tools/extract-frames.mjs makes them): steel forged for the U.S. Army, the United States at night
-       from the space station, an uncrewed XQ-58A flying with an F-22 and an F-35. Metals, energy, machines.
+  <!-- HERO: a film that plays as you scroll, drawn by main.js on a canvas. Act 1 is a public-domain clip cut into
+       frames (tools/extract-frames.mjs): steel forged for the U.S. Army, with sparks flying in front. Acts 2 and 3
+       (founder, 2026-11-26) are public-domain photos in depth layers that move at different speeds: the core of the
+       Advanced Test Reactor, and the X-62A VISTA (an F-16 flown by AI) with an F-16, cut out over the desert.
        Phones, reduced motion and data saver get the three stills instead. The footage illustrates the sectors, it is
        never presented as the week's news; it is credited in the footer. -->
-  <section class="hero-film" data-film data-film-acts="metals:64, energy:50, machines:40">
+  <section class="hero-film" data-film data-film-acts="metals:64, energy:layers, machines:layers">
     <div class="film-sticky">
       <div class="film-stills" aria-hidden="true">
         <img class="film-still film-still--metals is-on" src="assets/film/metals.webp" alt="" width="1280" height="720" fetchpriority="high">
@@ -124,7 +125,7 @@
           <span class="film-kicker">02 · Energy</span>
           <h2>Uranium and nuclear fuel</h2>
           <p>Enrichment, reactor licensing and fuel contracts, from NRC and IAEA notices and the nuclear trade press.</p>
-          <small>File footage: the eastern United States at night, from the International Space Station, NASA</small>
+          <small>File photo: the core of the Advanced Test Reactor, Idaho National Laboratory, U.S. Nuclear Regulatory Commission</small>
         </div>
       </div>
       <div class="container film-beat" data-film-beat>
@@ -132,7 +133,7 @@
           <span class="film-kicker">03 · Machines</span>
           <h2>Defense and military AI</h2>
           <p>Contract awards, budgets and autonomy programs, from the Federal Register and the defense press.</p>
-          <small>File footage: an uncrewed XQ-58A flying with an F-22 and an F-35, U.S. Air Force</small>
+          <small>File photo: the X-62A VISTA, an F-16 flown by artificial intelligence, with an F-16 over Edwards AFB, U.S. Air Force</small>
         </div>
       </div>
 
@@ -444,7 +445,7 @@
       <span>Not investment advice.</span>
     </div>
     <p class="footer-legal">Metals &amp; Machines is a publisher of general financial research. It is not a registered investment adviser or broker-dealer and does not give personalized investment advice. Every subscriber receives the same content. The author holds ETFs in the sectors discussed; see the Disclosure policy. Investing involves risk, including the loss of principal.</p>
-    <p class="footer-credits">Film at the top of the page, public domain, cropped and resized: steel forged at Scranton Army Ammunition Plant, <a href="https://www.dvidshub.net/video/928362/press-process-scranton-army-ammunition-plant" target="_blank" rel="noopener">U.S. Army video by Dori Whipple</a> · the eastern United States at night from the International Space Station, <a href="https://eol.jsc.nasa.gov/Videos/CrewEarthObservationsVideos/NorthAmerica.htm#eastUS_iss_20150111" target="_blank" rel="noopener">ISS Crew Earth Observations Facility and the Earth Science and Remote Sensing Unit, NASA Johnson Space Center</a> · an uncrewed XQ-58A Valkyrie flying with an F-22 and an F-35, <a href="https://www.dvidshub.net/video/914717/xq-58a-test-flight-b-roll" target="_blank" rel="noopener">U.S. Air Force video by the 3rd Audiovisual Squadron</a>. Photos: the Beaver Valley nuclear plant, Pennsylvania, <a href="https://commons.wikimedia.org/wiki/File:Beaver_Valley_Nuclear_Power_Plant.jpg" target="_blank" rel="noopener">U.S. Nuclear Regulatory Commission</a>, public domain, resized · city lights of the United States, <a href="https://commons.wikimedia.org/wiki/File:City_Lights_of_the_United_States_2012.jpg" target="_blank" rel="noopener">NASA Earth Observatory</a>, public domain, resized and darkened · gas centrifuge cascade, <a href="https://commons.wikimedia.org/wiki/File:Gas_centrifuge_cascade.jpg" target="_blank" rel="noopener">U.S. Department of Energy</a>, public domain, resized and darkened. The appearance of U.S. Department of Defense visual information does not imply or constitute DoD endorsement; use of these images does not imply endorsement by NASA or any other U.S. government agency.</p>
+    <p class="footer-credits">Film at the top of the page, public domain, cropped and resized: steel forged at Scranton Army Ammunition Plant, <a href="https://www.dvidshub.net/video/928362/press-process-scranton-army-ammunition-plant" target="_blank" rel="noopener">U.S. Army video by Dori Whipple</a> · the core of the Advanced Test Reactor at Idaho National Laboratory, <a href="https://commons.wikimedia.org/wiki/File:The_Advanced_Test_Reactor_at_Idaho_National_Laboratory_(14676550274).jpg" target="_blank" rel="noopener">U.S. Nuclear Regulatory Commission</a>, cropped · the X-62A VISTA and an F-16 over Edwards Air Force Base, <a href="https://commons.wikimedia.org/wiki/File:X-62A_VISTA_flies_over_Edwards_AFB_(8417484).jpg" target="_blank" rel="noopener">U.S. Air Force photo by Richard Gonzales</a>, cropped, the two aircraft cut out from the desert to move apart from it. Photos: the Beaver Valley nuclear plant, Pennsylvania, <a href="https://commons.wikimedia.org/wiki/File:Beaver_Valley_Nuclear_Power_Plant.jpg" target="_blank" rel="noopener">U.S. Nuclear Regulatory Commission</a>, public domain, resized · city lights of the United States, <a href="https://commons.wikimedia.org/wiki/File:City_Lights_of_the_United_States_2012.jpg" target="_blank" rel="noopener">NASA Earth Observatory</a>, public domain, resized and darkened · gas centrifuge cascade, <a href="https://commons.wikimedia.org/wiki/File:Gas_centrifuge_cascade.jpg" target="_blank" rel="noopener">U.S. Department of Energy</a>, public domain, resized and darkened. The appearance of U.S. Department of Defense visual information does not imply or constitute DoD endorsement; use of these images does not imply endorsement by NASA or any other U.S. government agency.</p>
   </div>
 </footer>
 

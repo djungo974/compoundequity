@@ -205,8 +205,15 @@
     const conn = navigator.connection || {};
     const canvas = film.querySelector(".film-canvas");
     const ctx = canvas && canvas.getContext ? canvas.getContext("2d") : null;
+    // An act is a run of video frames ("metals:64") or a photo in depth layers ("energy:layers"): the layers, from the
+    // farthest to the nearest, move at different speeds as the page scrolls (founder, 2026-11-26).
+    const LAYERS = { energy: ["energy-photo.webp"], machines: ["machines-photo.webp", "machines-jets.webp"] };
     const acts = (film.dataset.filmActs || "").split(",")
-      .map((s) => { const [name, count] = s.trim().split(":"); return { name, count: Number(count), frames: [], asked: false, loaded: 0 }; })
+      .map((s) => {
+        const [name, kind] = s.trim().split(":");
+        const files = kind === "layers" ? LAYERS[name] || [] : null;
+        return { name, files, count: files ? files.length : Number(kind), frames: [], asked: false, loaded: 0 };
+      })
       .filter((a) => a.name && a.count > 0);
 
     // The nav keeps the film's dark palette for as long as the film is under it.
@@ -266,8 +273,110 @@
           wanted = "";
           schedule();
         };
-        img.src = "assets/film/" + act.name + "/f" + pad(k + 1) + ".webp";
+        img.src = act.files ? "assets/film/" + act.files[k] : "assets/film/" + act.name + "/f" + pad(k + 1) + ".webp";
       }
+    }
+    // A layered act can be drawn once all its layers are in; a video act as soon as any frame is.
+    const ready = (act, local) => (act.files ? act.loaded === act.count : !!frameOf(act, local));
+    const rnd = (k, s) => { const v = Math.sin(k * 127.1 + s * 311.7) * 43758.5453; return v - Math.floor(v); };
+    // Draws img over the canvas, zoomed by z around the anchor (ax, ay), moved by (dx, dy), turned by rot.
+    function coverAt(img, z, ax, ay, dx, dy, rot) {
+      const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+      const s = Math.max(canvas.width / iw, canvas.height / ih) * z;
+      const w = iw * s, h = ih * s;
+      ctx.save();
+      ctx.translate(canvas.width * ax + (dx || 0), canvas.height * ay + (dy || 0));
+      if (rot) ctx.rotate(rot);
+      ctx.drawImage(img, -w * ax, -h * ay, w, h);
+      ctx.restore();
+    }
+    function paint(act, local, t) {
+      if (act.files && act.name === "energy") return paintEnergy(act, local, t);
+      if (act.files && act.name === "machines") return paintMachines(act, local, t);
+      const img = frameOf(act, local);
+      if (img) cover(img);
+      if (act.name === "metals") sparks(local, t);
+    }
+    // 01 Metals: sparks fly up from the fire, the nearest plane, rising faster than the film as the page scrolls.
+    function sparks(local, t) {
+      const W = canvas.width, H = canvas.height, lift = -local * 0.18 * H;
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+      ctx.lineCap = "round";
+      const unit = Math.max(1, W / 900);
+      for (let k = 0; k < 80; k++) {
+        const r1 = rnd(k, 1), r2 = rnd(k, 2), r3 = rnd(k, 3);
+        const life = 1.1 + r1 * 1.4, a = (t / life + r2) % 1, age = a * life;
+        const vx = (r3 - 0.5) * 0.26 * W, vy = -(0.25 + r1 * 0.5) * H;
+        const x = W * (0.5 + (r2 - 0.5) * 0.12) + vx * age;
+        const y = H * 0.74 + vy * age + 0.35 * H * age * age + lift;
+        const fade = (1 - a) * Math.min(1, a * 8);
+        const tx = x - vx * 0.045, ty = y - (vy + 0.7 * H * age) * 0.045;
+        // A wide orange glow under a thin white-hot core.
+        ctx.strokeStyle = "rgba(255, 120, 30, " + (0.45 * fade).toFixed(3) + ")";
+        ctx.lineWidth = unit * (3.5 + 2 * r3);
+        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(tx, ty); ctx.stroke();
+        ctx.strokeStyle = "rgba(255, " + Math.round(200 + 50 * (1 - a)) + ", " + Math.round(120 + 110 * (1 - a)) + ", " + fade.toFixed(3) + ")";
+        ctx.lineWidth = unit * (1.2 + r3);
+        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(tx, ty); ctx.stroke();
+      }
+      ctx.restore();
+    }
+    // 02 Energy: the reactor pool zooms slowly, the glowing core (the same photo, faded towards its edges) comes
+    // forward faster and breathes, blue specks rise in front.
+    function paintEnergy(act, local, t) {
+      const img = act.frames[0];
+      if (!act.core) {
+        const c = document.createElement("canvas");
+        c.width = img.naturalWidth; c.height = img.naturalHeight;
+        const g = c.getContext("2d");
+        g.drawImage(img, 0, 0);
+        // Solid over the core, fading only at its rim, so the two planes never show the same detail twice.
+        const r = g.createRadialGradient(c.width * 0.5, c.height * 0.47, c.width * 0.24, c.width * 0.5, c.height * 0.47, c.width * 0.33);
+        r.addColorStop(0, "rgba(0,0,0,1)"); r.addColorStop(1, "rgba(0,0,0,0)");
+        g.globalCompositeOperation = "destination-in"; g.fillStyle = r; g.fillRect(0, 0, c.width, c.height);
+        act.core = c;
+      }
+      const W = canvas.width, H = canvas.height;
+      coverAt(img, 1.04 + 0.07 * local, 0.5, 0.47, 0, (0.5 - local) * 0.02 * H);
+      coverAt(act.core, 1.04 + 0.17 * local, 0.5, 0.47, 0, (0.5 - local) * 0.04 * H);
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+      ctx.globalAlpha = 0.14 + 0.14 * (0.5 + 0.5 * Math.sin(t * 2.1));
+      coverAt(act.core, 1.04 + 0.17 * local, 0.5, 0.47, 0, (0.5 - local) * 0.04 * H);
+      ctx.globalAlpha = 1;
+      for (let k = 0; k < 90; k++) {
+        const r1 = rnd(k, 4), r2 = rnd(k, 5), r3 = rnd(k, 6);
+        const a = (t / (6 + r1 * 8) + r2) % 1;
+        const x = W * (0.12 + 0.76 * r3) + Math.sin(t * 0.8 + k) * 0.012 * W;
+        const y = H * (1.08 - a * 1.25) - local * 0.3 * H;
+        const rad = (1 + r1 * 2.6) * W / 1300;
+        ctx.fillStyle = "rgba(150, 215, 255, " + (0.6 * Math.sin(Math.PI * a)).toFixed(3) + ")";
+        ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.restore();
+    }
+    // 03 Machines: the desert drifts slowly, the two jets (cut out of the same photo) move faster and sway a little,
+    // thin veils of cloud pass in front, fastest of all.
+    function paintMachines(act, local, t) {
+      const [bg, jets] = act.frames;
+      const W = canvas.width, H = canvas.height;
+      // Framed a little low, so the X-62A (top left) stays clear of the nav.
+      coverAt(bg, 1.08 + 0.04 * local, 0.5, 0.5, (local - 0.5) * 0.06 * W + Math.sin(t * 0.3) * 0.006 * W, 0.05 * H);
+      coverAt(jets, 1.05 + 0.08 * local, 0.5, 0.5, -local * 0.04 * W, 0.06 * H + Math.sin(t * 0.9) * 0.005 * H, -0.01 * local);
+      ctx.save();
+      for (let k = 0; k < 5; k++) {
+        const r1 = rnd(k, 7), r2 = rnd(k, 8), r3 = rnd(k, 9);
+        const x = (((r2 * 1.6 + t * 0.035 * (1 + r1) + local * 0.9) % 1.6) - 0.3) * W;
+        const y = H * (0.1 + 0.8 * r3), rx = (0.22 + 0.16 * r1) * W, ry = rx * 0.28;
+        const g = ctx.createRadialGradient(x, y, 0, x, y, rx);
+        g.addColorStop(0, "rgba(255, 250, 244, " + (0.22 + 0.14 * r1).toFixed(3) + ")"); g.addColorStop(1, "rgba(255, 250, 244, 0)");
+        ctx.fillStyle = g;
+        ctx.setTransform(1, 0, 0, ry / rx, 0, y - y * ry / rx);
+        ctx.beginPath(); ctx.arc(x, y, rx, 0, Math.PI * 2); ctx.fill();
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+      }
+      ctx.restore();
     }
     // The nearest frame already loaded, so a slow connection shows a slightly older picture rather than a hole.
     function frameOf(act, local) {
@@ -301,30 +410,32 @@
       const local = (p - act.from) / share;
       // Captions, bar and nav follow the same progress.
       if (intro) intro.classList.toggle("is-off", p > INTRO_END);
+      film.classList.toggle("is-past-intro", p > INTRO_END);
       if (bar) bar.classList.toggle("is-on", p > INTRO_END && p < 0.995);
       beats.forEach((b, n) => b.classList.toggle("is-on", n === i && local > (n === 0 ? 0.34 : 0.2) && local < 0.93));
       steps.forEach((s, n) => s.classList.toggle("is-on", n === i));
       underNav();
       if (p > act.from + share * 0.35) load(i + 1);
 
-      const img = frameOf(act, local);
+      // The layers and the sparks live on their own, so every frame is drawn (the loop below runs only while the
+      // film is on screen).
+      const t = performance.now() / 1000;
       const wipe = i > 0 ? (p - act.from) / WIPE : 1;
-      const prev = wipe < 1 ? frameOf(acts[i - 1], 1) : null;
-      if (!img && !prev) return;
-      const key = i + ":" + (img ? img.src : "") + ":" + (prev ? wipe.toFixed(3) : "");
-      if (key === wanted) return;
-      wanted = key;
-      if (prev) {
+      const prevAct = wipe < 1 ? acts[i - 1] : null;
+      const has = ready(act, local), hadPrev = prevAct && ready(prevAct, 1);
+      if (!has && !hadPrev) return;
+      wanted = "";
+      if (hadPrev) {
         // The new act shows through a ring that grows from the centre until it covers the screen.
-        cover(prev);
-        if (img) {
+        paint(prevAct, 1, t);
+        if (has) {
           const eased = 1 - Math.pow(1 - wipe, 2);
           const r = eased * Math.hypot(canvas.width, canvas.height) / 2;
           ctx.save();
           ctx.beginPath();
           ctx.arc(canvas.width / 2, canvas.height / 2, r, 0, Math.PI * 2);
           ctx.clip();
-          cover(img);
+          paint(act, local, t);
           ctx.restore();
           ctx.beginPath();
           ctx.arc(canvas.width / 2, canvas.height / 2, r, 0, Math.PI * 2);
@@ -333,10 +444,36 @@
           ctx.stroke();
         }
       } else {
-        cover(img);
+        paint(act, local, t);
       }
       if (!playing) { playing = true; film.classList.add("is-playing"); }
     }
+    // While the film is on and in view, it is drawn every frame (the sparks, specks, clouds and the core's glow move
+    // on their own); off screen or with animations off, nothing runs.
+    let looping = false;
+    function loop() {
+      if (!on) { looping = false; return; }
+      const r = film.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < window.innerHeight) draw();
+      requestAnimationFrame(loop);
+    }
+    // Each act's title comes in word by word, from blurred and tilted to sharp (style.css, .film-word).
+    beats.forEach((b) => {
+      const h = b.querySelector("h2");
+      if (!h || h.dataset.split) return;
+      const words = h.textContent.trim().split(/\s+/);
+      h.dataset.split = "1";
+      h.setAttribute("aria-label", words.join(" "));
+      h.textContent = "";
+      words.forEach((w, n) => {
+        const s = document.createElement("span");
+        s.className = "film-word";
+        s.setAttribute("aria-hidden", "true");
+        s.style.setProperty("--i", n);
+        s.textContent = w;
+        h.append(s, n < words.length - 1 ? " " : "");
+      });
+    });
 
     // Film or plain hero, following the Animations switch. The section is 330vh taller as a film: when it changes
     // above the visitor, the scroll position moves by the same amount so the page does not jump under their eyes;
@@ -355,6 +492,7 @@
         resize();
         wanted = "";
         if (document.readyState === "complete") load(0);
+        if (!looping) { looping = true; requestAnimationFrame(loop); }
       } else {
         playing = false;
         film.classList.remove("is-playing");
