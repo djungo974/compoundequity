@@ -461,6 +461,9 @@ section { position: relative; }
 .plan-price { font-family: var(--font-display); font-size: 40px; font-weight: 700; margin: 14px 0 2px; }
 .plan-price span { font-size: 14px; font-family: var(--font-body); color: var(--text-faint); font-weight: 500; }
 .plan-alt { font-size: 13.5px; color: var(--text-faint); min-height: 20px; }
+/* Annual plan as an offer (founder, 2026-11-26): the price of 12 months at the monthly rate, struck through, before
+   the annual price. A true comparison with the monthly plan, not an invented "was" price. */
+.plan-was { margin-right: 10px; font-size: 24px; font-weight: 600; color: var(--text-faint); text-decoration: line-through; text-decoration-color: #E2665C; text-decoration-thickness: 2px; }
 .plan-desc { font-size: 14.5px; margin: 16px 0 22px; }
 .plan-features { list-style: none; margin: 0 0 28px; padding: 0; display: flex; flex-direction: column; gap: 12px; flex: 1; }
 .plan-features li { display: flex; gap: 10px; font-size: 14.5px; color: var(--text-soft); line-height: 1.5; }
