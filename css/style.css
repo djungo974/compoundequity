@@ -693,6 +693,8 @@ section { position: relative; }
   background-color: #0F1317; background-repeat: no-repeat;
 }
 .section-photo::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+/* Twinkling city lights over the night map (main.js, initCityLights): above the shading, under the plans. */
+.city-lights { position: absolute; left: 0; top: 0; z-index: -1; pointer-events: none; }
 .section-photo .section-head { text-shadow: 0 1px 2px rgba(0,0,0,.7), 0 0 18px rgba(6,9,12,.95); }
 .section-photo .section-head p { color: #F2F4F6; }
 .section-photo .plan { background: rgba(26, 33, 40, 0.82); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }

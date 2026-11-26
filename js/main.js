@@ -748,11 +748,140 @@
     initAlertDemo();
     initHeroFilm();
     initIssues();
+    initCityLights();
     initEmailSignup();
     initConfirmEmail();
     initWelcome();
     markActiveNav();
   });
+
+  // City lights on the night map behind the plans (founder, 2026-11-26: "very visible"). The brightest points of the
+  // photo itself are found once (it is on this site, so its pixels can be read): they are the real cities. Each one
+  // then twinkles on its own rhythm on a canvas laid over the photo, with a halo and a four-point star at its peak.
+  // Nothing moves while animations are off or while the section is out of view.
+  function initCityLights() {
+    const sec = document.querySelector(".section-photo--plans");
+    if (!sec || !document.createElement("canvas").getContext) return;
+    const img = new Image();
+    img.src = "assets/img/plans-night.jpg";
+    img.decode().then(() => {
+      const spots = findCities(img);
+      if (!spots.length) return;
+      const cv = document.createElement("canvas");
+      cv.className = "city-lights";
+      cv.setAttribute("aria-hidden", "true");
+      sec.prepend(cv);
+      const ctx = cv.getContext("2d");
+      const halo = sprite(64, (g, s) => {
+        const r = g.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+        r.addColorStop(0, "rgba(255, 246, 214, 1)"); r.addColorStop(0.18, "rgba(255, 214, 140, .85)");
+        r.addColorStop(0.45, "rgba(255, 170, 70, .28)"); r.addColorStop(1, "rgba(255, 150, 50, 0)");
+        g.fillStyle = r; g.fillRect(0, 0, s, s);
+      });
+      const star = sprite(96, (g, s) => {
+        const c = s / 2;
+        for (const [w, h] of [[s, 2.2], [2.2, s]]) {
+          const lg = w > h ? g.createLinearGradient(0, c, s, c) : g.createLinearGradient(c, 0, c, s);
+          lg.addColorStop(0, "rgba(255, 236, 190, 0)"); lg.addColorStop(0.5, "rgba(255, 250, 230, 1)"); lg.addColorStop(1, "rgba(255, 236, 190, 0)");
+          g.fillStyle = lg; g.fillRect(c - w / 2, c - h / 2, w, h);
+        }
+      });
+      let pts = [], w = 0, h = 0, dpr = 1, running = false, visible = false, raf = 0, last = 0;
+      const layout = () => {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = sec.clientWidth;
+        // Lower down, the section's own shading hides the map: lights stop where the photo fades out.
+        h = Math.min(sec.clientHeight, Math.round(window.innerWidth * (window.innerWidth <= 600 ? 0.8 : 0.6)));
+        cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+        cv.style.width = w + "px"; cv.style.height = h + "px";
+        const cs = getComputedStyle(sec);
+        const [sx] = cs.backgroundSize.split(" ");
+        const bw = sx.endsWith("%") ? (parseFloat(sx) / 100) * w : sx === "auto" || sx === "cover" ? w : parseFloat(sx);
+        const bh = bw * img.naturalHeight / img.naturalWidth;
+        const [px, py] = cs.backgroundPosition.split(" ");
+        const pos = (v, free) => (v && v.endsWith("%") ? (parseFloat(v) / 100) * free : parseFloat(v) || 0);
+        const ox = pos(px, w - bw), oy = pos(py, sec.clientHeight - bh);
+        pts = spots.map((s) => ({ ...s, x: ox + s.u * bw, y: oy + s.v * bh })).filter((p) => p.x > 0 && p.x < w && p.y > 0 && p.y < h);
+      };
+      const draw = (t) => {
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, w, h);
+        ctx.globalCompositeOperation = "lighter";
+        for (const p of pts) {
+          const wave = Math.max(0, Math.sin((t / p.period + p.phase) * Math.PI * 2));
+          const k = 0.18 + 0.82 * Math.pow(wave, 3);
+          const r = p.size * (0.7 + 0.6 * k);
+          ctx.globalAlpha = Math.min(1, k * 1.1);
+          ctx.drawImage(halo, p.x - r, p.y - r, r * 2, r * 2);
+          if (k > 0.55) {
+            const sr = p.size * 1.7 * k;
+            ctx.globalAlpha = (k - 0.55) / 0.45;
+            ctx.drawImage(star, p.x - sr, p.y - sr, sr * 2, sr * 2);
+          }
+        }
+        ctx.globalAlpha = 1;
+      };
+      const loop = (t) => {
+        if (!running) return;
+        if (t - last > 33) { last = t; draw(t / 1000); }
+        raf = requestAnimationFrame(loop);
+      };
+      const update = () => {
+        const go = visible && !motionOff();
+        if (go && !running) { running = true; raf = requestAnimationFrame(loop); }
+        if (!go && running) { running = false; cancelAnimationFrame(raf); }
+        cv.hidden = motionOff();
+      };
+      layout();
+      let rt = 0;
+      window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { layout(); if (!running) draw(0); }, 150); });
+      new IntersectionObserver((e) => { visible = e[0].isIntersecting; update(); }, { rootMargin: "100px" }).observe(sec);
+      document.addEventListener("mm:motion", update);
+      update();
+    }).catch(() => { /* no lights if the photo cannot be read */ });
+
+    function sprite(size, paint) {
+      const c = document.createElement("canvas");
+      c.width = c.height = size;
+      paint(c.getContext("2d"), size);
+      return c;
+    }
+    // The photo scaled to 500 px wide; local brightness peaks, the brightest first, never two closer than 8 px.
+    function findCities(image) {
+      const W = 500, H = Math.round(W * image.naturalHeight / image.naturalWidth);
+      const c = document.createElement("canvas");
+      c.width = W; c.height = H;
+      const g = c.getContext("2d", { willReadFrequently: true });
+      g.drawImage(image, 0, 0, W, H);
+      let px;
+      try { px = g.getImageData(0, 0, W, H).data; } catch (e) { return []; }
+      const lum = new Float32Array(W * H);
+      for (let i = 0; i < W * H; i++) lum[i] = 0.2126 * px[i * 4] + 0.7152 * px[i * 4 + 1] + 0.0722 * px[i * 4 + 2];
+      const peaks = [];
+      for (let y = 2; y < H - 2; y++) {
+        for (let x = 2; x < W - 2; x++) {
+          const v = lum[y * W + x];
+          if (v < 120) continue;
+          let top = true;
+          for (let dy = -2; dy <= 2 && top; dy++) for (let dx = -2; dx <= 2; dx++) if (lum[(y + dy) * W + x + dx] > v) { top = false; break; }
+          if (top) peaks.push({ x, y, v });
+        }
+      }
+      peaks.sort((a, b) => b.v - a.v);
+      const kept = [];
+      for (const p of peaks) {
+        if (kept.length >= 170) break;
+        if (kept.some((k) => (k.x - p.x) ** 2 + (k.y - p.y) ** 2 < 64)) continue;
+        kept.push(p);
+      }
+      return kept.map((p, i) => ({
+        u: p.x / W, v: p.y / H,
+        size: 5 + (p.v / 255) * 9,
+        period: 1.6 + ((i * 7919) % 100) / 100 * 2.6,
+        phase: ((i * 104729) % 1000) / 1000,
+      }));
+    }
+  }
 
   // Free issue by email (founder, 2026-11-23). The form posts to subscribe.metalsandmachines.com, a relay that passes
   // it to our automation server; a confirmation email follows, and nothing is sent until the reader clicks it.
