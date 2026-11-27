@@ -443,7 +443,7 @@
           ctx.beginPath();
           ctx.arc(canvas.width / 2, canvas.height / 2, r, 0, Math.PI * 2);
           ctx.lineWidth = Math.max(2, canvas.width / 480);
-          ctx.strokeStyle = "rgba(168, 198, 232, " + (0.85 * (1 - wipe)).toFixed(3) + ")";
+          ctx.strokeStyle = "rgba(226, 196, 120, " + (0.85 * (1 - wipe)).toFixed(3) + ")";   // gold ring
           ctx.stroke();
         }
       } else {
