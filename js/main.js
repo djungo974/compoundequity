@@ -528,6 +528,83 @@
     setMode();
   }
 
+  // The seal on the home page (founder, 2026-11-27: "a cool animation, like it grows"). It grows in large behind
+  // the headline, as a faint engraving, then shrinks, turns once and lands in the middle of the nav as you scroll
+  // the first half screen. Two copies share one path: the large one lives in the film, behind the words; the nav's
+  // own copy takes over as the seal reaches the bar (the nav sits above the film, so the film's copy would pass
+  // under the bar's frosted background). Without the film (phones, "reduce motion", the Animations switch) the
+  // seal simply rests in the nav.
+  function initSeal() {
+    const hero = document.querySelector(".hero-seal");
+    const navSeal = document.querySelector(".nav-seal");
+    const film = document.querySelector("[data-film]");
+    const nav = document.querySelector(".nav");
+    if (!hero || !navSeal || !film || !nav) return;
+    const clamp = (v) => Math.min(1, Math.max(0, v));
+    const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+    const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    const smooth = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
+    let looping = false, lastEvent = performance.now(), start = null;
+    function measure(W, H) {
+      const top = film.querySelector(".film-copy .eyebrow"), end = film.querySelector(".film-hint") || film.querySelector(".film-copy");
+      const stage = hero.parentElement.getBoundingClientRect();
+      let a = H * 0.2, b = H * 0.8;
+      if (top && end && end.getBoundingClientRect().height) { a = top.getBoundingClientRect().top - stage.top; b = end.getBoundingClientRect().bottom - stage.top; }
+      const r = ((b - a) / 2 + 18) / 0.67;
+      return { w: W, h: H, d0: Math.min(2 * r, W * 0.92), x0: W / 2, y0: stage.top + (a + b) / 2 };
+    }
+
+    function rest() {
+      document.body.classList.remove("seal-flying");
+      for (const el of [hero, navSeal]) {
+        el.style.width = el.style.height = el.style.transform = el.style.opacity = "";
+        ["--seal-turn", "--seal-a", "--seal-ring-a", "--seal-core-a"].forEach((v) => el.style.removeProperty(v));
+      }
+    }
+    function frame() {
+      looping = false;
+      if (!film.classList.contains("is-film") || motionOff()) { rest(); return; }
+      const W = window.innerWidth, H = window.innerHeight;
+      const p = clamp(window.scrollY / (0.5 * H));
+      if (p >= 1) { rest(); return; }
+      document.body.classList.add("seal-flying");
+      // Where the nav's seal rests (its margins centre it; its transform is ours).
+      const box = navSeal.offsetParent.getBoundingClientRect();
+      const d1 = navSeal.offsetWidth;
+      const x1 = box.left + navSeal.offsetLeft + d1 / 2, y1 = box.top + navSeal.offsetTop + d1 / 2;
+      // Where it starts: large, centred on the first screen's words, its lettering passing above the kicker and
+      // below the scroll hint (the words fill the inner part of the ring: 0.67 of its radius).
+      if (!start || start.w !== W || start.h !== H) start = measure(W, H);
+      const { d0, x0, y0 } = start;
+      // It shrinks first and rises later, so it is small by the time it reaches the bar.
+      const k = easeOut(p), m = easeInOut(p);
+      const d = d0 + (d1 - d0) * k, x = x0 + (x1 - x0) * m, y = y0 + (y1 - y0) * m;
+      const vars = {
+        "--seal-turn": (360 * m).toFixed(1) + "deg",
+        "--seal-a": (0.55 + 0.45 * smooth(0, 0.5, p)).toFixed(3),
+        "--seal-ring-a": (0.5 + 0.5 * smooth(0.15, 0.85, p)).toFixed(3),
+        "--seal-core-a": (0.3 + 0.7 * smooth(0.3, 0.9, p)).toFixed(3),
+      };
+      const navBottom = nav.getBoundingClientRect().bottom;
+      const handoff = smooth(navBottom + 46, navBottom + 6, y);    // as its centre reaches the bar
+      const stage = hero.parentElement.getBoundingClientRect();
+      hero.style.width = hero.style.height = d.toFixed(1) + "px";
+      hero.style.transform = "translate(" + (x - stage.left - d / 2).toFixed(1) + "px, " + (y - stage.top - d / 2).toFixed(1) + "px)";
+      hero.style.opacity = handoff >= 1 ? "0" : "1";
+      navSeal.style.transform = "translate(" + (x - x1).toFixed(1) + "px, " + (y - y1).toFixed(1) + "px) scale(" + (d / d1).toFixed(3) + ")";
+      navSeal.style.opacity = handoff.toFixed(3);
+      for (const el of [hero, navSeal]) for (const v in vars) el.style.setProperty(v, vars[v]);
+      // The nav changes height when it gets its background: keep following it for a moment after each scroll.
+      if (performance.now() - lastEvent < 700) schedule();
+    }
+    function schedule() { if (!looping) { looping = true; requestAnimationFrame(frame); } }
+    const onEvent = () => { lastEvent = performance.now(); schedule(); };
+    window.addEventListener("scroll", onEvent, { passive: true });
+    window.addEventListener("resize", onEvent);
+    document.addEventListener("mm:motion", onEvent);
+    frame();
+  }
+
   // Past issues: data/issues.json lists every free issue really sent to the public channel, newest first. The home
   // page's phone shows the newest one and archive.html lists them all. Both pages already hold the first issue as
   // plain HTML, so nothing is lost if the file cannot be read. Everything goes in as text, never as HTML.
@@ -898,6 +975,7 @@
     initCircuit();
     initAlertDemo();
     initHeroFilm();
+    initSeal();
     initIssues();
     initCityLights();
     initEmailSignup();
